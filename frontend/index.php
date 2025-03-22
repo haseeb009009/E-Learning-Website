@@ -133,8 +133,8 @@
                                     CourseCraft </h5>
                                 <h1 class="display-3 text-white animated slideInDown">Interactive Learning Experience
                                 </h1>
-                                <p class=" text-white mb-4 pb-2">Engage with interactive lessons, quizzes, and
-                                    projects. Experience hands-on learning that keeps you motivated and inspired.</p>
+                                <p class=" text-white mb-4 pb-2">Engage with interactive lessons
+                                    . Experience hands-on learning that keeps you motivated and inspired.</p>
                                 <a href="about.php"
                                     class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read More</a>
                                 <?php if (!isset($_SESSION['user_id'])): ?>
