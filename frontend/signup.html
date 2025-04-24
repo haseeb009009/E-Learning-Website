@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>CourseCraft  : Signup</title>
+    <title>CourseCraft : Signup</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -51,8 +50,8 @@
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -73,13 +72,13 @@
                 </div>
                 <a href="contact.php" class="nav-item nav-link"></a>
                 <?php if (!isset($_SESSION['user_id'])): ?>
-                    <a href="login.html" class="nav-item nav-link"><i class="fa fa-user"></i>login</a>
+                <a href="login.html" class="nav-item nav-link"><i class="fa fa-user"></i>login</a>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="logout.php" class="nav-item nav-link"></a>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="profile.php" class="nav-item nav-link"></a>
-                    <?php endif; ?>
+                <a href="logout.php" class="nav-item nav-link"></a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="nav-item nav-link"></a>
+                <?php endif; ?>
                 <?php endif; ?>
                 <a href="#" class="nav-item nav-link">
                     <div id="google_translate_element">
@@ -90,18 +89,18 @@
     </nav>
     <!-- Navbar End -->
 
-        <!-- Header Start -->
-        <div class="container-fluid bg-primary py-5 mb-5 page-header">
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-lg-10 text-center">
-                        <h1 class="display-3 text-white animated slideInDown">Signup</h1>
-                    </div>
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Signup</h1>
                 </div>
             </div>
         </div>
-        <!-- Header End -->
-    
+    </div>
+    <!-- Header End -->
+
 
 
     <!-- Signup Start -->
@@ -120,19 +119,22 @@
                         <div class="row g-3">
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="username" name="username" placeholder="Username"  required>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Username" required>
                                     <label for="Username">Username</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email Address"  required>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="Email Address" required>
                                     <label for="email">Email Address</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="Password" required>
                                     <label for="password">Password</label>
                                 </div>
                             </div>
@@ -223,6 +225,100 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <!-- … rest of your HTML … -->
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- Client‑side validation -->
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            document.querySelectorAll('.validation-error').forEach(el => el.remove());
+            let valid = true;
+            const emailInput = document.getElementById('email');
+            const passInput = document.getElementById('password');
+
+            document.querySelector('form').addEventListener('submit', function (e) {
+                document.querySelectorAll('.validation-error').forEach(el => el.remove());
+                const email = emailInput.value.trim();
+                const parts = email.split('@');
+
+                // 1) Exactly one "@"
+                if (parts.length !== 2) {
+                    showError(emailInput, 'Email must contain exactly one "@".');
+                    e.preventDefault(); return;
+                }
+                const [local, domain] = parts;
+
+                // 2) Local‑part minimum length 5
+                if (local.length < 5) {
+                    showError(emailInput, 'Email username (before "@") must be at least 5 characters.');
+                    e.preventDefault(); return;
+                }
+                // 2a) Must start with a letter
+                if (!/^[A-Za-z]/.test(local)) {
+                    showError(emailInput, 'Email username must start with a letter.');
+                    e.preventDefault(); return;
+                }
+                // 3) At least one uppercase
+                if (!/[A-Z]/.test(local)) {
+                    showError(emailInput, 'Email username must include at least one uppercase letter.');
+                    e.preventDefault(); return;
+                }
+                // 4) At least one lowercase
+                if (!/[a-z]/.test(local)) {
+                    showError(emailInput, 'Email username must include at least one lowercase letter.');
+                    e.preventDefault(); return;
+                }
+                // 5) At least one digit
+                if (!/\d/.test(local)) {
+                    showError(emailInput, 'Email username must include at least one number.');
+                    e.preventDefault(); return;
+                }
+                // 5a) No runs of 3+ digits
+                if (/\d{3,}/.test(local)) {
+                    showError(emailInput, 'Email username cannot contain three consecutive digits.');
+                    e.preventDefault(); return;
+                }
+                // 5b) No more than 2 digits total
+                if ((local.match(/\d/g) || []).length > 2) {
+                    showError(emailInput, 'Email username can have at most 2 digits.');
+                    e.preventDefault(); return;
+                }
+                // 6) No invalid chars in local‑part
+                if (!/^[A-Za-z0-9._%+-]+$/.test(local)) {
+                    showError(emailInput, 'Email username contains invalid characters.');
+                    e.preventDefault(); return;
+                }
+                // 7) Basic domain check
+                if (!/^[^\s@]+\.[^\s@]+$/.test(domain)) {
+                    showError(emailInput, 'Email domain must be a valid format (e.g. example.com).');
+                    e.preventDefault(); return;
+                }
+
+            });
+
+
+
+            if (passInput.value.length < 6) {
+                showError(passInput, 'Password must be at least 6 characters.');
+                valid = false;
+            }
+            if (!valid) e.preventDefault();
+            function showError(inputEl, message) {
+                const err = document.createElement('small');
+                err.className = 'validation-error text-danger';
+                err.textContent = message;
+                inputEl.parentNode.appendChild(err);
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
 </body>
 
 </html>
