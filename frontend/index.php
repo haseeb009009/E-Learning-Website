@@ -66,10 +66,10 @@
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
-                <a href="about.php" class="nav-item nav-link">About</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
                     <div class="dropdown-menu fade-down m-0">
+                        <a href="about.php" class="dropdown-item">About</a>
                         <a href="team.php" class="dropdown-item">Our Team</a>
                         <a href="contact.php" class="dropdown-item">Contact</a>
                         <a href="instructor.php" class="dropdown-item">Our instructors</a>
@@ -265,7 +265,7 @@
                     <p class="mb-4">Start your online learning journey at Great Learning Academy for free with our
                         short-term basic courses across various in-demand domains.</p>
 
-                    <a class="btn text-light py-3 px-5 mt-2" href="signup.html">Start For Free</a>
+                    <a class="btn text-light py-3 px-5 mt-2" href="courses.php">Start For Free</a>
                 </div>
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
                     <div class="position-relative h-100">

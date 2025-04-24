@@ -90,12 +90,12 @@ $stmt->close();
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="index.php" class="nav-item nav-link ">Home</a>
+            <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
-                <a href="about.php" class="nav-item nav-link">About</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
                     <div class="dropdown-menu fade-down m-0">
+                        <a href="about.php" class="dropdown-item">About</a>
                         <a href="team.php" class="dropdown-item">Our Team</a>
                         <a href="contact.php" class="dropdown-item">Contact</a>
                         <a href="instructor.php" class="dropdown-item">Our instructors</a>
