@@ -2,7 +2,7 @@
 
 frontend link
 
-http://localhost/myproject/frontend/
+http://localhost/E-Learning-Website/frontend
 
 
 myadmin  database link
