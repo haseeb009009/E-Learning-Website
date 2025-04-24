@@ -1,0 +1,12 @@
+(run xampp first)
+
+frontend link
+
+http://localhost/myproject/frontend/
+
+
+myadmin  database link
+
+http://localhost/phpmyadmin/index.php?route=/database/structure&db=lms
+
+
