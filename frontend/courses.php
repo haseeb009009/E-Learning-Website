@@ -111,10 +111,42 @@
     <!-- Courses Start -->
     <div class="container-xxl py-5">
         <div class="container">
+
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                 <h6 class="section-title bg-white text-center px-3">Popular Courses</h6>
                 <h1 class="mb-5" style="color: #fb873f;">Explore new and trending free online courses</h1>
             </div>
+            <div class="row mb-4">
+    <div class="col-md-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search courses by name...">
+    </div>
+    <div class="col-md-2">
+        <select id="levelFilter" class="form-control">
+            <option value="">All Levels</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="priceFilter" class="form-control">
+            <option value="">All</option>
+            <option value="FREE">Free</option>
+            <option value="PAID">Paid</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="durationFilter" class="form-control">
+            <option value="">All Durations</option>
+            <option value="0-2">0-2 hrs</option>
+            <option value="2-4">2-4 hrs</option>
+            <option value="4+">4+ hrs</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <button id="resetBtn" class="btn btn-secondary w-100">Reset</button>
+    </div>
+</div>
+
             <div class="row g-4 py-2">
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="course-item shadow">
@@ -574,6 +606,46 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const levelFilter = document.getElementById('levelFilter');
+        const priceFilter = document.getElementById('priceFilter');
+        const durationFilter = document.getElementById('durationFilter');
+        const courseCards = document.querySelectorAll('.course-item');
+
+        function filterCourses() {
+            const searchText = searchInput.value.toLowerCase();
+            const level = levelFilter.value;
+            const price = priceFilter.value;
+            const duration = durationFilter.value;
+
+            courseCards.forEach(card => {
+                const title = card.querySelector('h5').innerText.toLowerCase();
+                const courseLevel = card.innerText.includes("Intermediate") ? "Intermediate" : "Beginner";
+                const coursePrice = card.innerText.includes("PAID") ? "PAID" : "FREE";
+                const courseDuration = parseFloat(card.querySelector('.fa-clock').parentElement.innerText);
+
+                let show = title.includes(searchText);
+                if (level && courseLevel !== level) show = false;
+                if (price && coursePrice !== price) show = false;
+                if (duration) {
+                    if (duration === '0-2' && !(courseDuration >= 0 && courseDuration <= 2)) show = false;
+                    if (duration === '2-4' && !(courseDuration > 2 && courseDuration <= 4)) show = false;
+                    if (duration === '4+' && !(courseDuration > 4)) show = false;
+                }
+
+                card.style.display = show ? '' : 'none';
+            });
+        }
+
+        [searchInput, levelFilter, priceFilter, durationFilter].forEach(input => {
+            input.addEventListener('input', filterCourses);
+        });
+    });
+</script>
+
 </body>
 
 </html>
