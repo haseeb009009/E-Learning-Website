@@ -1,0 +1,16 @@
+$filesToInclude = @(
+  "about.php", "auth.php", "contact.php", "courses.php", "course_details.php",
+  "db_connect.php", "enroll.php", "forgot_password.php", "index.php",
+  "instructor.php", "login.html", "login.php", "logout.php",
+  "profile.php", "readme.md", "signup.html", "signup.php", "team.php",
+  "testimonial.php", "v.php", "watch_course.php"
+)
+
+Get-ChildItem -Path . -Recurse -File |
+  Where-Object { $filesToInclude -contains $_.Name } |
+  Sort-Object FullName |
+  ForEach-Object {
+    Write-Output "===== $($_.FullName) ====="
+    Get-Content $_.FullName
+    Write-Output "-------------"
+  } | Out-File .\all_frontend_code.txt -Encoding utf8
