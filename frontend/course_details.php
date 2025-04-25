@@ -140,7 +140,11 @@ $stmt->close();
         <p><strong>Instructor:</strong> <?php echo $course['instructor']; ?></p>
         <p><strong>Duration:</strong> <?php echo $course['duration']; ?></p>
 
-        <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+        <?php if ($course['price'] > 0): ?>
+    <a href="payment.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
+<?php else: ?>
+    <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+<?php endif; ?>
     </div>
 </center>
 

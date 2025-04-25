@@ -1,49 +1,40 @@
 <?php
-session_start();
+include 'auth.php';
+
 $host = "localhost";
 $dbname = "lms";
 $username = "root";
 $password = "";
-
 $conn = new mysqli($host, $username, $password, $dbname);
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo "<script>alert('You need to log in first!'); window.location.href='login.html';</script>";
-    exit;
-}
-
-// Check if course_id is provided
-if (!isset($_GET['course_id'])) {
-    echo "<script>alert('Invalid course selection!'); window.location.href='courses.php';</script>";
-    exit;
-}
 
 $course_id = $_GET['course_id'];
 $user_id = $_SESSION['user_id'];
 
-// Fetch course details
+// Fetch course info
 $sql = "SELECT * FROM courses WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $course_id);
 $stmt->execute();
 $result = $stmt->get_result();
+$course = $result->fetch_assoc();
 
-if ($result->num_rows > 0) {
-    $course = $result->fetch_assoc();
-} else {
-    echo "<script>alert('Course not found!'); window.location.href='courses.php';</script>";
-    exit;
-}
-$stmt->close();
+// Check for existing payment
+$sql = "SELECT * FROM payments WHERE user_id = ? AND course_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $user_id, $course_id);
+$stmt->execute();
+$payment_result = $stmt->get_result();
+$payment = $payment_result->fetch_assoc();
+
+$status = $payment ? $payment['payment_status'] : 'none';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-
-
     <meta charset="utf-8">
-    <title>CourseCraft  : Courses</title>
+    <title>CourseCraft : payment</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -72,26 +63,17 @@ $stmt->close();
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 
-
-
-    <title><?php echo $course['title']; ?> - Course</title>
+    <title><?php echo $course['title']; ?> - Course Details</title>
 </head>
+
 <body>
-
-
-    <!-- <div id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div> -->
-            <!-- Navbar Start -->
+    <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -99,7 +81,7 @@ $stmt->close();
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
+                <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
@@ -129,49 +111,32 @@ $stmt->close();
         </div>
     </nav>
     <!-- Navbar End -->
-    <!-- Header Start -->
-    <div class="container-fluid bg-primary py-5 mb-5 page-header">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 text-center">
-                    <h1 class="display-3 text-white animated slideInDown">Courses</h1>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="bg-white p-5 shadow rounded text-center">
+                    <h2 class="text-primary mb-4">Payment Status</h2>
+                    <h4 class="mb-3"><?php echo $course['title']; ?></h4>
+                    <p><strong>Price:</strong> $<?php echo $course['price']; ?></p>
+
+                    <?php if ($status === 'completed'): ?>
+                        <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-success px-5 py-2">Start Course</a>
+
+                    <?php elseif ($status === 'pending'): ?>
+                        <button class="btn btn-warning px-5 py-2" disabled>Pending Approval</button>
+                        <p class="mt-3 text-muted">Your payment is under review by the admin. Please check back later.</p>
+
+                    <?php else: ?>
+                        <p class="text-danger">No payment found. Please complete your payment first.</p>
+                        <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary mt-2">Go to Payment Options</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Header End -->
 
-<center>
-    <div class="container">
-        <h1><?php echo $course['title']; ?></h1>
-        <p><?php echo $course['description']; ?></p>
-        
-        <!-- Course Video -->
-        <video width="100%" height="auto" controls>
-            <source src="<?php echo $course['video_url']; ?>" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        
-        <!-- Notepad Feature -->
-        <h3>Take Notes</h3>
-        <textarea id="notes" rows="6" cols="50" placeholder="Write your notes here..."></textarea>
-        <br>
-        <button class="btn text-light w-10 py-1" onclick="downloadNotes()">Save Notes</button>
-    </div>
-</center>
-    <script>
-        function downloadNotes() {
-            let notes = document.getElementById("notes").value;
-            let blob = new Blob([notes], { type: "text/plain" });
-            let link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "Course_Notes.txt";
-            link.click();
-        }
-    </script>
-
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-4 col-md-6">
@@ -222,11 +187,10 @@ $stmt->close();
         </div>
     </div>
     <!-- Footer End -->
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-
+    <script src="js/main.js"></script>
 </body>
+
 </html>
