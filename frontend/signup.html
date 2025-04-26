@@ -224,89 +224,92 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
 
-    <!-- … rest of your HTML … -->
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
 
     <!-- Client‑side validation -->
     <script>
         document.querySelector('form').addEventListener('submit', function (e) {
             document.querySelectorAll('.validation-error').forEach(el => el.remove());
+    
             let valid = true;
             const emailInput = document.getElementById('email');
             const passInput = document.getElementById('password');
-
-            document.querySelector('form').addEventListener('submit', function (e) {
-                document.querySelectorAll('.validation-error').forEach(el => el.remove());
-                const email = emailInput.value.trim();
-                const parts = email.split('@');
-
-                // 1) Exactly one "@"
-                if (parts.length !== 2) {
-                    showError(emailInput, 'Email must contain exactly one "@".');
-                    e.preventDefault(); return;
-                }
+    
+            const email = emailInput.value.trim();
+            const parts = email.split('@');
+    
+            // 1) Exactly one "@"
+            if (parts.length !== 2) {
+                showError(emailInput, 'Email must contain exactly one "@".');
+                valid = false;
+            } else {
                 const [local, domain] = parts;
-
+    
                 // 2) Local‑part minimum length 5
                 if (local.length < 5) {
                     showError(emailInput, 'Email username (before "@") must be at least 5 characters.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 2a) Must start with a letter
                 if (!/^[A-Za-z]/.test(local)) {
                     showError(emailInput, 'Email username must start with a letter.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 3) At least one uppercase
                 if (!/[A-Z]/.test(local)) {
                     showError(emailInput, 'Email username must include at least one uppercase letter.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 4) At least one lowercase
                 if (!/[a-z]/.test(local)) {
                     showError(emailInput, 'Email username must include at least one lowercase letter.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 5) At least one digit
                 if (!/\d/.test(local)) {
                     showError(emailInput, 'Email username must include at least one number.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 5a) No runs of 3+ digits
                 if (/\d{3,}/.test(local)) {
                     showError(emailInput, 'Email username cannot contain three consecutive digits.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 5b) No more than 2 digits total
                 if ((local.match(/\d/g) || []).length > 2) {
                     showError(emailInput, 'Email username can have at most 2 digits.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 6) No invalid chars in local‑part
                 if (!/^[A-Za-z0-9._%+-]+$/.test(local)) {
                     showError(emailInput, 'Email username contains invalid characters.');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
+    
                 // 7) Basic domain check
                 if (!/^[^\s@]+\.[^\s@]+$/.test(domain)) {
                     showError(emailInput, 'Email domain must be a valid format (e.g. example.com).');
-                    e.preventDefault(); return;
+                    valid = false;
                 }
-
-            });
-
-
-
+            }
+    
+            // Password check
             if (passInput.value.length < 6) {
                 showError(passInput, 'Password must be at least 6 characters.');
                 valid = false;
             }
-            if (!valid) e.preventDefault();
+    
+            if (!valid) {
+                e.preventDefault();
+            }
+    
             function showError(inputEl, message) {
                 const err = document.createElement('small');
                 err.className = 'validation-error text-danger';
@@ -315,6 +318,9 @@
             }
         });
     </script>
+        <!-- Template Javascript -->
+        <script src="js/main.js"></script>
+    
 </body>
 
 </html>

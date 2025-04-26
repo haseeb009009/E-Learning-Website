@@ -1,7 +1,5 @@
-
-
 Get-ChildItem -Path . -Recurse -File |
-  Where-Object { $_.Extension -eq '.php' -or $_.Extension -eq '.html' } |
+  Where-Object { $_.Extension -eq '.php' -or $_.Extension -eq '.html' -or $_.Extension -eq '.sql' } |
   Sort-Object FullName |
   ForEach-Object {
     Write-Output "===== $($_.FullName) ====="
