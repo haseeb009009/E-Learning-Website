@@ -127,7 +127,7 @@ $status = $payment ? $payment['payment_status'] : 'none';
                         <p class="mt-3 text-muted">Your payment is under review by the admin. Please check back later.</p>
 
                     <?php else: ?>
-                        <p class="text-danger">No payment found. Please complete your payment first.</p>
+                        <p class="text-danger">Please complete your payment first.</p>
                         <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary mt-2">Go to Payment Options</a>
                     <?php endif; ?>
                 </div>

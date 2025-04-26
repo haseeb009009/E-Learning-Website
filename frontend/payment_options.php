@@ -17,7 +17,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $course = $result->fetch_assoc();
 
-// ✅ Insert payment if not already done
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $check = $conn->prepare("SELECT id FROM payments WHERE user_id = ? AND course_id = ?");
     $check->bind_param("ii", $user_id, $course_id);
@@ -27,12 +26,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($existing->num_rows === 0) {
         $stmt = $conn->prepare("INSERT INTO payments (user_id, course_id, amount, payment_status) VALUES (?, ?, ?, 'pending')");
         $stmt->bind_param("iid", $user_id, $course_id, $course['price']);
-        $stmt->execute();
+
+        if ($stmt->execute()) {
+            echo "✅ Payment inserted!";
+        } else {
+            echo "❌ Error: " . $stmt->error;
+        }
     }
 
     echo "<script>window.location.href='payment.php?course_id=$course_id';</script>";
     exit;
 }
+
 ?>
 
 
@@ -72,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p><strong>Price:</strong> $<?php echo $course['price']; ?></p>
 
                     <form method="POST">
+
                         <input type="hidden" name="course_id" value="<?php echo $course_id; ?>">
 
                         <div class="mb-3">
@@ -187,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 setTimeout(() => {
                                     window.location.href = 'payment.php?course_id=<?php echo $course_id; ?>';
                                 }, 2000);
-                                return false;
+                                return true;
                             }
                         </script>
                     </form>
