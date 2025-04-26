@@ -1281,7 +1281,7 @@ $stmt->close();
                         <div class="position-relative overflow-hidden text-light image">
                             <img class="img-fluid" src="img/course-12.png" alt="">
                             <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
+                            class="px-2 py-1 fw-bold text-uppercase">PAID</div>
 
                         </div>
                         <div class="p-2 pb-0">
@@ -3102,6 +3102,184 @@ if (isset($_POST['update_password'])) {
     'js' => 'lib/waypoints/waypoints.min.js'
   );
 ?>
+-------------
+===== C:\xampp\htdocs\E-Learning-Website\frontend\lms (1).sql =====
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Apr 25, 2025 at 09:10 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `lms`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `courses`
+--
+
+CREATE TABLE `courses` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `instructor` varchar(255) NOT NULL,
+  `duration` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `video_url` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `courses`
+--
+
+INSERT INTO `courses` (`id`, `title`, `description`, `instructor`, `duration`, `price`, `video_url`) VALUES
+(1, 'HTML Course for Beginners', 'learn HTML  for from scratch.', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
+(2, 'Front End Development-CSS', 'Introduction to Front End Development-CSS', 'Jane Smith', '4.55', 10.00, 'videos/js_basics.mp4'),
+(3, 'Introduction to JavaScript', 'Learn JavaScript', 'John Doe', '2.5', 0.00, 'videos/php_intro.mp4'),
+(4, 'Python Programming', 'Introduction to Python programming.', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
+(5, 'SQL for Data Science', 'LearnSQL from scratch.', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
+(6, 'ChatGPT for Beginners', 'learn how to use ChatGPT ', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
+(7, 'AWS for Beginners', 'Learn AWS from scratch', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
+(8, 'Microsoft Azure Essentials', 'learn Microsoft Azure Essentials', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
+(9, 'Introduction to MS Excel', 'Learn how  to use  MS Excel', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
+(10, 'Statistics For Data Science', 'learn Statistics For Data Science', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
+(11, 'Java Programming', 'Learn Java Programming', 'John Doe', '2.0', 10.00, 'videos/php_intro.mp4'),
+(12, 'C for Beginners', 'learn C Programming language', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `enrollments`
+--
+
+CREATE TABLE `enrollments` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_email` varchar(255) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `course_name` varchar(255) NOT NULL,
+  `enrolled_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `payment_status` varchar(50) DEFAULT 'completed',
+  `payment_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `reset_token` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `courses`
+--
+ALTER TABLE `courses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `enrollments`
+--
+ALTER TABLE `enrollments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `course_id` (`course_id`),
+  ADD KEY `fk_user_enrollment` (`user_id`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `courses`
+--
+ALTER TABLE `courses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `enrollments`
+--
+ALTER TABLE `enrollments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000001;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `enrollments`
+--
+ALTER TABLE `enrollments`
+  ADD CONSTRAINT `enrollments_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
+  ADD CONSTRAINT `fk_user_enrollment` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 -------------
 ===== C:\xampp\htdocs\E-Learning-Website\frontend\login.html =====
 <!DOCTYPE html>
@@ -5086,6 +5264,31 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Handle CRUD operations
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $table = $_POST['table'];
+    if (isset($_POST['delete'])) {
+        $id = $_POST['id'];
+        $conn->query("DELETE FROM $table WHERE id = $id");
+    } elseif (isset($_POST['update'])) {
+        $id = $_POST['id'];
+        $columns = $_POST['columns'];
+        $values = $_POST['values'];
+        $updateQuery = "UPDATE $table SET ";
+        foreach ($columns as $index => $column) {
+            $updateQuery .= "$column = '{$values[$index]}', ";
+        }
+        $updateQuery = rtrim($updateQuery, ', ') . " WHERE id = $id";
+        $conn->query($updateQuery);
+    } elseif (isset($_POST['create'])) {
+        $columns = $_POST['columns'];
+        $values = $_POST['values'];
+        $columnsList = implode(',', $columns);
+        $valuesList = "'" . implode("','", $values) . "'";
+        $conn->query("INSERT INTO $table ($columnsList) VALUES ($valuesList)");
+    }
+}
+
 // Get all table names in the database
 $tables = [];
 $result = $conn->query("SHOW TABLES");
@@ -5105,20 +5308,20 @@ while ($row = $result->fetch_array()) {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
-            margin: 20px;
+            margin: 1px;
         }
         h2 {
             color: #333;
         }
         table {
-            width: 80%;
-            margin: 20px auto;
+            width: 1%;
+            margin: 1px ;
             border-collapse: collapse;
             background: #fff;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
         }
         th, td {
-            padding: 10px;
+            padding: 1px;
             border: 1px solid #ddd;
         }
         th {
@@ -5128,11 +5331,13 @@ while ($row = $result->fetch_array()) {
         tr:nth-child(even) {
             background: #f9f9f9;
         }
+        form {
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
-<h2>JUST FOR TESTING </h2>
-<h2>Database Tables & Data</h2>
+<h2>Database Tables & CRUD Operations</h2>
 
 <?php foreach ($tables as $table): ?>
     <h3>Table: <?php echo $table; ?></h3>
@@ -5141,10 +5346,13 @@ while ($row = $result->fetch_array()) {
             <?php
             // Get table columns
             $columns = $conn->query("SHOW COLUMNS FROM $table");
+            $columnNames = [];
             while ($col = $columns->fetch_assoc()) {
+                $columnNames[] = $col['Field'];
                 echo "<th>{$col['Field']}</th>";
             }
             ?>
+            <th>Actions</th>
         </tr>
         <?php
         // Get table data
@@ -5154,9 +5362,39 @@ while ($row = $result->fetch_array()) {
             foreach ($row as $value) {
                 echo "<td>$value</td>";
             }
+            echo "<td>
+                <form method='POST'>
+                    <input type='hidden' name='table' value='$table'>
+                    <input type='hidden' name='id' value='{$row['id']}'>
+                    <button type='submit' name='delete'>Delete</button>
+                </form>
+                <form method='POST'>
+                    <input type='hidden' name='table' value='$table'>
+                    <input type='hidden' name='id' value='{$row['id']}'>";
+            foreach ($columnNames as $colName) {
+                echo "<input type='hidden' name='columns[]' value='$colName'>";
+                echo "<input type='text' name='values[]' value='{$row[$colName]}'>";
+            }
+            echo "<button type='submit' name='update'>Update</button>
+                </form>
+            </td>";
             echo "</tr>";
         }
         ?>
+        <tr>
+            <form method="POST">
+                <input type="hidden" name="table" value="<?php echo $table; ?>">
+                <?php foreach ($columnNames as $colName): ?>
+                    <td>
+                        <input type="hidden" name="columns[]" value="<?php echo $colName; ?>">
+                        <input type="text" name="values[]" placeholder="<?php echo $colName; ?>">
+                    </td>
+                <?php endforeach; ?>
+                <td>
+                    <button type="submit" name="create">Create</button>
+                </td>
+            </form>
+        </tr>
     </table>
 <?php endforeach; ?>
 
