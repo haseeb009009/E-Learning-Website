@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="mb-3">
                                 <label>Your Wallet Account Number (for verification purpose)</label>
                                 <input type="text" class="form-control" placeholder="03XXXXXXXXX" required
-                                    oninput="validateWalletNumber(this)" maxlength="11">
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateWalletNumber(this)" maxlength="11">
                                 <small class="text-danger d-none" id="walletError">Wallet number must be exactly 11 digits.</small>
                             </div>
 
