@@ -36,7 +36,7 @@ $stmt->close();
 
 <head>
     <meta charset="utf-8">
-    <title>CourseCraft  : Courses</title>
+    <title>CourseCraft : Courses</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -81,8 +81,8 @@ $stmt->close();
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -90,7 +90,7 @@ $stmt->close();
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
+                <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
@@ -133,20 +133,20 @@ $stmt->close();
     </div>
     <!-- Header End -->
 
-<center>
-    <div class="container">
-        <h1><?php echo $course['title']; ?></h1>
-        <p><?php echo $course['description']; ?></p>
-        <p><strong>Instructor:</strong> <?php echo $course['instructor']; ?></p>
-        <p><strong>Duration:</strong> <?php echo $course['duration']; ?></p>
+    <center>
+        <div class="container">
+            <h1><?php echo $course['title']; ?></h1>
+            <p><?php echo $course['description']; ?></p>
+            <p><strong>Instructor:</strong> <?php echo $course['instructor']; ?></p>
+            <p><strong>Duration:</strong> <?php echo $course['duration']; ?></p>
 
-        <?php if ($course['price'] > 0): ?>
-    <a href="payment.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
-<?php else: ?>
-    <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
-<?php endif; ?>
-    </div>
-</center>
+            <?php if ($course['price'] > 0): ?>
+                <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
+            <?php else: ?>
+                <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+            <?php endif; ?>
+        </div>
+    </center>
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">

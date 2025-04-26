@@ -5,4 +5,4 @@ Get-ChildItem -Path . -Recurse -File |
     Write-Output "===== $($_.FullName) ====="
     Get-Content $_.FullName
     Write-Output "-------------"
-  } | Out-File .\all_frontend_code.txt -Encoding utf8
+  } | Out-File .\aall_frontend_code.txt -Encoding utf8
