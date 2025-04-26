@@ -17,6 +17,7 @@ $stmt->bind_param("i", $course_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $course = $result->fetch_assoc();
+$stmt->close();
 
 // Check for existing payment
 $sql = "SELECT * FROM payments WHERE user_id = ? AND course_id = ?";
@@ -25,9 +26,21 @@ $stmt->bind_param("ii", $user_id, $course_id);
 $stmt->execute();
 $payment_result = $stmt->get_result();
 $payment = $payment_result->fetch_assoc();
+$stmt->close();
 
-$status = $payment ? $payment['payment_status'] : 'none';
+// If no payment exists, insert new pending payment
+if (!$payment) {
+    $amount = $course['price'];
+    $insert = $conn->prepare("INSERT INTO payments (user_id, course_id, amount, payment_status) VALUES (?, ?, ?, 'pending')");
+    $insert->bind_param("iid", $user_id, $course_id, $amount);
+    $insert->execute();
+    $insert->close();
+    $status = 'pending';
+} else {
+    $status = $payment['payment_status'];
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -127,7 +140,7 @@ $status = $payment ? $payment['payment_status'] : 'none';
                         <p class="mt-3 text-muted">Your payment is under review by the admin. Please check back later.</p>
 
                     <?php else: ?>
-                        <p class="text-danger">Please complete your payment first.</p>
+                        <p class="text-danger"></p>
                         <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary mt-2">Go to Payment Options</a>
                     <?php endif; ?>
                 </div>
