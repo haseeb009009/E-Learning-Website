@@ -172,7 +172,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
     <!-- Header End -->
 
     <div class="container mt-5">
-        <div class="card shadow p-4">
+        <div class="card shadow p-4"> 
+            
+        <!--  -->
             <h1 class="text-center">Account Details</h1>
             <hr>
             <p><strong>Username:</strong> <?php echo $user['username']; ?></p>
@@ -200,6 +202,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
                 <p class="text-muted">You have not enrolled in any courses yet.</p>
             <?php endif; ?>
             
+            <!--  -->
+
+
             <hr>
             <h2>Account Settings</h2>
             <a href="forgot_password.php" class="btn btn-danger">Reset Password</a>
