@@ -10,6 +10,7 @@ $conn = new mysqli($host, $username, $password, $dbname);
 $course_id = $_GET['course_id'];
 $user_id = $_SESSION['user_id'];
 
+// Fetch course details
 $sql = "SELECT * FROM courses WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $course_id);
@@ -17,6 +18,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $course = $result->fetch_assoc();
 
+// When user clicks "I've Paid" (form submit)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $check = $conn->prepare("SELECT id FROM payments WHERE user_id = ? AND course_id = ?");
     $check->bind_param("ii", $user_id, $course_id);
@@ -26,19 +28,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($existing->num_rows === 0) {
         $stmt = $conn->prepare("INSERT INTO payments (user_id, course_id, amount, payment_status) VALUES (?, ?, ?, 'pending')");
         $stmt->bind_param("iid", $user_id, $course_id, $course['price']);
-
         if ($stmt->execute()) {
+            // ✅ Payment inserted
+            $_SESSION['pending_course_id'] = $course_id;  // 🟡 Set session for pending course
             echo "✅ Payment inserted!";
         } else {
             echo "❌ Error: " . $stmt->error;
         }
+    } else {
+        // 🟡 If already exists, still set pending session
+        $_SESSION['pending_course_id'] = $course_id;
     }
 
+    // Redirect after payment
     echo "<script>window.location.href='payment.php?course_id=$course_id';</script>";
     exit;
 }
-
 ?>
+
 
 
 

@@ -1,5 +1,5 @@
 <?php
- 
+
 $servername = "localhost";
 $username = "root";  // Change if needed
 $password = "";  // Change if needed
@@ -8,7 +8,7 @@ $dbname = "lms";
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check if user is logged in
- include 'auth.php';
+include 'auth.php';
 
 $user_id = $_SESSION['user_id'];
 
@@ -29,13 +29,13 @@ $course_result = $stmt->get_result();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
     $course_id = $_POST['course_id'];
-    
+
     // Remove enrollment from the database
     $sql = "DELETE FROM enrollments WHERE user_id = ? AND course_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $course_id);
     $stmt->execute();
-    
+
     echo "<script>
     document.addEventListener('DOMContentLoaded', function() {
         let msgBox = document.createElement('div');
@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
     <meta name="google-translate-customization" content="9f841e7780177523-3214ceb76f765f38-gc38c6fe6f9d06436-c">
     </meta>
 
-    <title>CourseCraft  : profile</title>
+    <title>CourseCraft : profile</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -111,6 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
 
     <title>User Profile</title>
 </head>
+
 <body>
 
 
@@ -119,8 +120,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -128,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
+                <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
@@ -159,8 +160,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
     </nav>
     <!-- Navbar End -->
 
-        <!-- Header Start -->
-        <div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
@@ -172,36 +173,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
     <!-- Header End -->
 
     <div class="container mt-5">
-        <div class="card shadow p-4"> 
-            
-        <!--  -->
+        <div class="card shadow p-4">
+
+            <!--  -->
             <h1 class="text-center">Account Details</h1>
             <hr>
             <p><strong>Username:</strong> <?php echo $user['username']; ?></p>
             <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
             <p><strong>Joined:</strong> <?php echo $user['created_at']; ?></p>
-            
+
             <hr>
             <h2>Enrolled Courses</h2>
             <?php if ($course_result->num_rows > 0): ?>
                 <ul class="list-group">
                     <?php while ($row = $course_result->fetch_assoc()): ?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong><?php echo $row['course_name']; ?></strong>
                             <div>
-                                <a href="watch_course.php?course_id=<?php echo $row['course_id']; ?>" class="btn btn-primary btn-sm">Continue Course</a>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="course_id" value="<?php echo $row['course_id']; ?>">
-                                    <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
-                                </form>
+                                <strong><?php echo htmlspecialchars($row['course_name']); ?></strong>
+                            </div>
+                            <div>
+                                <?php if (isset($_SESSION['pending_course_id']) && $_SESSION['pending_course_id'] == $row['course_id']): ?>
+                                    <!-- Show Pending Box -->
+                                    <button class="btn btn-warning btn-sm" disabled>Pending Approval</button>
+                                <?php else: ?>
+                                    <!-- Show Normal Buttons -->
+                                    <a href="watch_course.php?course_id=<?php echo $row['course_id']; ?>" class="btn btn-primary btn-sm">Continue Course</a>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="course_id" value="<?php echo $row['course_id']; ?>">
+                                        <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
+                                    </form>
+                                <?php endif; ?>
                             </div>
                         </li>
+
                     <?php endwhile; ?>
                 </ul>
             <?php else: ?>
                 <p class="text-muted">You have not enrolled in any courses yet.</p>
             <?php endif; ?>
-            
+
             <!--  -->
 
 
@@ -272,4 +282,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
 
 
 </body>
+
 </html>
