@@ -6,43 +6,48 @@ $username = "root";
 $password = "";
 $conn = new mysqli($host, $username, $password, $dbname);
 
+// Pagination settings
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 15;
+$offset = ($page - 1) * $limit;
+
 // Handle Add/Edit/Delete Users
 if (isset($_POST['save_user'])) {
     if (!empty($_POST['user_id'])) {
-        // Update existing user
         $stmt = $conn->prepare("UPDATE users SET username=?, email=?, password=? WHERE id=?");
         $stmt->bind_param("sssi", $_POST['username'], $_POST['email'], $_POST['password'], $_POST['user_id']);
         $stmt->execute();
+        header("Location: admin_dashboard.php");
+        exit;
+    
     } else {
-        // Insert new user
         $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $_POST['username'], $_POST['email'], $_POST['password']);
         $stmt->execute();
+        header("Location: admin_dashboard.php");
     }
-    header("Location: admin_dashboard.php");
     exit;
 }
 
 if (isset($_GET['delete_user'])) {
     $conn->query("DELETE FROM users WHERE id=" . (int)$_GET['delete_user']);
-    header("Location: admin_dashboard.php");
+    header("Location: admin_dashboard.php ");
     exit;
 }
 
 // Handle Add/Edit/Delete Courses
 if (isset($_POST['save_course'])) {
     if (!empty($_POST['course_id'])) {
-        // Update existing course
         $stmt = $conn->prepare("UPDATE courses SET title=?, instructor=?, price=? WHERE id=?");
         $stmt->bind_param("ssdi", $_POST['title'], $_POST['instructor'], $_POST['price'], $_POST['course_id']);
         $stmt->execute();
+        header("Location: admin_dashboard.php");
     } else {
-        // Insert new course
         $stmt = $conn->prepare("INSERT INTO courses (title, instructor, price) VALUES (?, ?, ?)");
         $stmt->bind_param("ssd", $_POST['title'], $_POST['instructor'], $_POST['price']);
         $stmt->execute();
+        header("Location: admin_dashboard.php");
     }
-    header("Location: admin_dashboard.php");
     exit;
 }
 
@@ -67,13 +72,38 @@ if (isset($_GET['delete_payment'])) {
     exit;
 }
 
-// Fetch records
-$users = $conn->query("SELECT * FROM users");
-$courses = $conn->query("SELECT * FROM courses");
-$payments = $conn->query("SELECT payments.*, users.username AS user_name, courses.title AS course_name FROM payments 
-JOIN users ON payments.user_id = users.id 
-JOIN courses ON payments.course_id = courses.id");
+// Search feature
+$user_search = $_GET['user_search'] ?? '';
+$course_search = $_GET['course_search'] ?? '';
+$payment_search = $_GET['payment_search'] ?? '';
+
+// Fetch records with search + pagination
+if ($user_search != '') {
+    $users = $conn->query("SELECT * FROM users WHERE username LIKE '%$user_search%' OR email LIKE '%$user_search%' LIMIT $limit OFFSET $offset");
+} else {
+    $users = $conn->query("SELECT * FROM users LIMIT $limit OFFSET $offset");
+}
+
+if ($course_search != '') {
+    $courses = $conn->query("SELECT * FROM courses WHERE title LIKE '%$course_search%' OR instructor LIKE '%$course_search%' LIMIT $limit OFFSET $offset");
+} else {
+    $courses = $conn->query("SELECT * FROM courses LIMIT $limit OFFSET $offset");
+}
+
+if ($payment_search != '') {
+    $payments = $conn->query("SELECT payments.*, users.username AS user_name, courses.title AS course_name FROM payments 
+    JOIN users ON payments.user_id = users.id 
+    JOIN courses ON payments.course_id = courses.id
+    WHERE users.username LIKE '%$payment_search%' OR courses.title LIKE '%$payment_search%'
+    LIMIT $limit OFFSET $offset");
+} else {
+    $payments = $conn->query("SELECT payments.*, users.username AS user_name, courses.title AS course_name FROM payments 
+    JOIN users ON payments.user_id = users.id 
+    JOIN courses ON payments.course_id = courses.id
+    LIMIT $limit OFFSET $offset");
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -129,9 +159,23 @@ JOIN courses ON payments.course_id = courses.id");
 
     <!--tables  -->
     <div class="container py-5">
-        <!-- USERS TABLE -->
-        <h4>👥 Users</h4>
-        <table class="table table-bordered">
+
+<!-- Success Message -->
+<?php if (isset($_GET['success'])): ?>
+    <div class="alert alert-success"><?= htmlspecialchars($_GET['success']) ?></div>
+<?php endif; ?>
+
+<!-- USERS -->
+<h4>👥 Users</h4>
+
+<!-- Search users -->
+<form method="get" class="mb-3">
+    <input type="text" name="user_search" class="form-control form-control-sm" placeholder="Search users..." value="<?= htmlspecialchars($_GET['user_search'] ?? '') ?>">
+</form>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-striped table-hover table-bordered table-sm">
             <tr>
                 <th>ID</th>
                 <th>Username</th>
@@ -164,47 +208,66 @@ JOIN courses ON payments.course_id = courses.id");
                 </form>
             </tr>
         </table>
+    </div>
+</div>
 
-        <!-- PAYMENTS TABLE -->
-        <h4 class="mt-5">💳 Payments</h4>
-<table class="table table-bordered">
-    <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Course</th>
-        <th>Amount</th>
-        <th>Status</th>
-        <th>Date</th>
-        <th>Action</th>
-    </tr>
-    <?php while ($p = $payments->fetch_assoc()): ?>
-        <tr>
-            <td><?= $p['id'] ?></td>
-            <td><?= htmlspecialchars($p['user_name']) ?></td>
-            <td><?= htmlspecialchars($p['course_name']) ?></td>
-            <td>$<?= $p['amount'] ?></td>
-            <td>
-                <form method="post" action="admin_dashboard.php" style="display: flex; align-items: center; gap: 5px;">
-                    <input type="hidden" name="payment_id" value="<?= $p['id'] ?>">
-                    <select name="payment_status" class="form-select form-select-sm">
-                        <option value="pending" <?= $p['payment_status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
-                        <option value="completed" <?= $p['payment_status'] == 'completed' ? 'selected' : '' ?>>Completed</option>
-                    </select>
-                    <button type="submit" name="update_payment" class="btn btn-sm btn-primary">Save</button>
-                </form>
-            </td>
-            <td><?= $p['payment_date'] ?></td>
-            <td>
-                <a href="?delete_payment=<?= $p['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete payment?')">Delete</a>
-            </td>
-        </tr>
-    <?php endwhile; ?>
-</table>
+<!-- PAYMENTS -->
+<h4>💳 Payments</h4>
 
+<!-- Search payments -->
+<form method="get" class="mb-3">
+    <input type="text" name="payment_search" class="form-control form-control-sm" placeholder="Search payments..." value="<?= htmlspecialchars($_GET['payment_search'] ?? '') ?>">
+</form>
 
-        <!-- COURSES TABLE -->
-        <h4 class="mt-5">📚 Courses</h4>
-        <table class="table table-bordered">
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-striped table-hover table-bordered table-sm">
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Course</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+            <?php while ($p = $payments->fetch_assoc()): ?>
+                <tr>
+                    <td><?= $p['id'] ?></td>
+                    <td><?= htmlspecialchars($p['user_name']) ?></td>
+                    <td><?= htmlspecialchars($p['course_name']) ?></td>
+                    <td>$<?= $p['amount'] ?></td>
+                    <td>
+                        <form method="post" style="display:flex; align-items:center; gap:5px;">
+                            <input type="hidden" name="payment_id" value="<?= $p['id'] ?>">
+                            <select name="payment_status" class="form-select form-select-sm">
+                                <option value="pending" <?= $p['payment_status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                <option value="completed" <?= $p['payment_status'] == 'completed' ? 'selected' : '' ?>>Completed</option>
+                            </select>
+                            <button type="submit" name="update_payment" class="btn btn-sm btn-primary">Save</button>
+                        </form>
+                    </td>
+                    <td><?= $p['payment_date'] ?></td>
+                    <td>
+                        <a href="?delete_payment=<?= $p['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete payment?')">Delete</a>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
+        </table>
+    </div>
+</div>
+
+<!-- COURSES -->
+<h4>📚 Courses</h4>
+
+<!-- Search courses -->
+<form method="get" class="mb-3">
+    <input type="text" name="course_search" class="form-control form-control-sm" placeholder="Search courses..." value="<?= htmlspecialchars($_GET['course_search'] ?? '') ?>">
+</form>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-striped table-hover table-bordered table-sm">
             <tr>
                 <th>ID</th>
                 <th>Title</th>
@@ -238,6 +301,10 @@ JOIN courses ON payments.course_id = courses.id");
             </tr>
         </table>
     </div>
+</div>
+
+</div>
+
 
     <!--tables  -->
     <!-- Footer Start -->
