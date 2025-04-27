@@ -77,7 +77,7 @@ $user_search = $_GET['user_search'] ?? '';
 $course_search = $_GET['course_search'] ?? '';
 $payment_search = $_GET['payment_search'] ?? '';
 
-// Fetch records with search + pagination
+// Fetch records with search
 if ($user_search != '') {
     $users = $conn->query("SELECT * FROM users WHERE username LIKE '%$user_search%' OR email LIKE '%$user_search%' LIMIT $limit OFFSET $offset");
 } else {
