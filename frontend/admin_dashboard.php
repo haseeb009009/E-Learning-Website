@@ -1,43 +1,80 @@
 <?php
+// connect.php
 $host = "localhost";
 $dbname = "lms";
 $username = "root";
 $password = "";
 $conn = new mysqli($host, $username, $password, $dbname);
 
-// Handle status update from dropdown
-if (isset($_POST['update_status_id']) && isset($_POST['payment_status'])) {
-    $id = $_POST['update_status_id'];
-    $status = $_POST['payment_status'];
-
-    $stmt = $conn->prepare("UPDATE payments SET payment_status = ? WHERE id = ?");
-    $stmt->bind_param("si", $status, $id);
-    $stmt->execute();
-    $stmt->close();
-
-    header("Location: admin_dashboard.php"); // Refresh after update
+// Handle Add/Edit/Delete Users
+if (isset($_POST['save_user'])) {
+    if (!empty($_POST['user_id'])) {
+        // Update existing user
+        $stmt = $conn->prepare("UPDATE users SET username=?, email=?, password=? WHERE id=?");
+        $stmt->bind_param("sssi", $_POST['username'], $_POST['email'], $_POST['password'], $_POST['user_id']);
+        $stmt->execute();
+    } else {
+        // Insert new user
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $_POST['username'], $_POST['email'], $_POST['password']);
+        $stmt->execute();
+    }
+    header("Location: admin_dashboard.php");
     exit;
 }
 
-// Delete user/course/payment
 if (isset($_GET['delete_user'])) {
-    $conn->query("DELETE FROM users WHERE id = " . $_GET['delete_user']);
-}
-if (isset($_GET['delete_course'])) {
-    $conn->query("DELETE FROM courses WHERE id = " . $_GET['delete_course']);
-}
-if (isset($_GET['delete_payment'])) {
-    $conn->query("DELETE FROM payments WHERE id = " . $_GET['delete_payment']);
+    $conn->query("DELETE FROM users WHERE id=" . (int)$_GET['delete_user']);
+    header("Location: admin_dashboard.php");
+    exit;
 }
 
-// Fetch data
+// Handle Add/Edit/Delete Courses
+if (isset($_POST['save_course'])) {
+    if (!empty($_POST['course_id'])) {
+        // Update existing course
+        $stmt = $conn->prepare("UPDATE courses SET title=?, instructor=?, price=? WHERE id=?");
+        $stmt->bind_param("ssdi", $_POST['title'], $_POST['instructor'], $_POST['price'], $_POST['course_id']);
+        $stmt->execute();
+    } else {
+        // Insert new course
+        $stmt = $conn->prepare("INSERT INTO courses (title, instructor, price) VALUES (?, ?, ?)");
+        $stmt->bind_param("ssd", $_POST['title'], $_POST['instructor'], $_POST['price']);
+        $stmt->execute();
+    }
+    header("Location: admin_dashboard.php");
+    exit;
+}
+
+if (isset($_GET['delete_course'])) {
+    $conn->query("DELETE FROM courses WHERE id=" . (int)$_GET['delete_course']);
+    header("Location: admin_dashboard.php");
+    exit;
+}
+
+// Handle Payment Status Update
+if (isset($_POST['update_payment'])) {
+    $stmt = $conn->prepare("UPDATE payments SET payment_status=? WHERE id=?");
+    $stmt->bind_param("si", $_POST['payment_status'], $_POST['payment_id']);
+    $stmt->execute();
+    header("Location: admin_dashboard.php");
+    exit;
+}
+
+if (isset($_GET['delete_payment'])) {
+    $conn->query("DELETE FROM payments WHERE id=" . (int)$_GET['delete_payment']);
+    header("Location: admin_dashboard.php");
+    exit;
+}
+
+// Fetch records
 $users = $conn->query("SELECT * FROM users");
 $courses = $conn->query("SELECT * FROM courses");
-$payments = $conn->query("SELECT payments.*, users.username AS user_name, courses.title AS course_name 
-FROM payments 
+$payments = $conn->query("SELECT payments.*, users.username AS user_name, courses.title AS course_name FROM payments 
 JOIN users ON payments.user_id = users.id 
 JOIN courses ON payments.course_id = courses.id");
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -87,59 +124,81 @@ JOIN courses ON payments.course_id = courses.id");
     </div>
 
     <!--tables  -->
-
     <div class="container py-5">
-        <h4 class="mt-4">👥 Users</h4>
+        <!-- USERS TABLE -->
+        <h4>👥 Users</h4>
         <table class="table table-bordered">
             <tr>
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Password</th>
                 <th>Action</th>
             </tr>
             <?php while ($u = $users->fetch_assoc()): ?>
                 <tr>
-                    <td><?= $u['id'] ?></td>
-                    <td><?= $u['username'] ?></td>
-                    <td><?= $u['email'] ?></td>
-                    <td><a href="?delete_user=<?= $u['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?');">Delete</a></td>
+                    <form method="post">
+                        <td><?= $u['id'] ?></td>
+                        <td><input type="text" name="username" value="<?= htmlspecialchars($u['username']) ?>" class="form-control form-control-sm"></td>
+                        <td><input type="email" name="email" value="<?= htmlspecialchars($u['email']) ?>" class="form-control form-control-sm"></td>
+                        <td><input type="password" name="password" placeholder="New Password" class="form-control form-control-sm"></td>
+                        <td>
+                            <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                            <button type="submit" name="save_user" class="btn btn-sm btn-primary">Save</button>
+                            <a href="?delete_user=<?= $u['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete user?')">Delete</a>
+                        </td>
+                    </form>
                 </tr>
             <?php endwhile; ?>
-        </table>
-        <h4 class="mt-5">💳 Payments</h4>
-        <table class="table table-bordered">
             <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Course</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Payment Date</th>
-                <th>Action</th>
+                <form method="post">
+                    <td>New</td>
+                    <td><input type="text" name="username" class="form-control form-control-sm" placeholder="Username" required></td>
+                    <td><input type="email" name="email" class="form-control form-control-sm" placeholder="Email" required></td>
+                    <td><input type="password" name="password" class="form-control form-control-sm" placeholder="Password" required></td>
+                    <td><button type="submit" name="save_user" class="btn btn-sm btn-success">Add</button></td>
+                </form>
             </tr>
-            <?php while ($p = $payments->fetch_assoc()): ?>
-                <tr>
-                    <td><?= $p['id'] ?></td>
-                    <td><?= $p['user_name'] ?></td>
-                    <td><?= $p['course_name'] ?></td>
-                    <td>$<?= $p['amount'] ?></td>
-                    <td>
-                        <form method="post" action="admin_dashboard.php" style="display:inline-block;">
-                            <input type="hidden" name="update_status_id" value="<?= $p['id'] ?>">
-                            <select name="payment_status" onchange="this.form.submit()" class="form-select form-select-sm">
-                                <option value="pending" <?= $p['payment_status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
-                                <option value="completed" <?= $p['payment_status'] == 'completed' ? 'selected' : '' ?>>Completed</option>
-                            </select>
-                        </form>
-                    </td>
-                    <td><?= $p['payment_date'] ?></td>
-                    <td>
-                        <a href="?delete_payment=<?= $p['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this payment?');">Delete</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
         </table>
 
+        <!-- PAYMENTS TABLE -->
+        <h4 class="mt-5">💳 Payments</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Course</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Action</th>
+    </tr>
+    <?php while ($p = $payments->fetch_assoc()): ?>
+        <tr>
+            <td><?= $p['id'] ?></td>
+            <td><?= htmlspecialchars($p['user_name']) ?></td>
+            <td><?= htmlspecialchars($p['course_name']) ?></td>
+            <td>$<?= $p['amount'] ?></td>
+            <td>
+                <form method="post" action="admin_dashboard.php" style="display: flex; align-items: center; gap: 5px;">
+                    <input type="hidden" name="payment_id" value="<?= $p['id'] ?>">
+                    <select name="payment_status" class="form-select form-select-sm">
+                        <option value="pending" <?= $p['payment_status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                        <option value="completed" <?= $p['payment_status'] == 'completed' ? 'selected' : '' ?>>Completed</option>
+                    </select>
+                    <button type="submit" name="update_payment" class="btn btn-sm btn-primary">Save</button>
+                </form>
+            </td>
+            <td><?= $p['payment_date'] ?></td>
+            <td>
+                <a href="?delete_payment=<?= $p['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete payment?')">Delete</a>
+            </td>
+        </tr>
+    <?php endwhile; ?>
+</table>
+
+
+        <!-- COURSES TABLE -->
         <h4 class="mt-5">📚 Courses</h4>
         <table class="table table-bordered">
             <tr>
@@ -151,17 +210,32 @@ JOIN courses ON payments.course_id = courses.id");
             </tr>
             <?php while ($c = $courses->fetch_assoc()): ?>
                 <tr>
-                    <td><?= $c['id'] ?></td>
-                    <td><?= $c['title'] ?></td>
-                    <td><?= $c['instructor'] ?></td>
-                    <td>$<?= $c['price'] ?></td>
-                    <td><a href="?delete_course=<?= $c['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this course?');">Delete</a></td>
+                    <form method="post">
+                        <td><?= $c['id'] ?></td>
+                        <td><input type="text" name="title" value="<?= htmlspecialchars($c['title']) ?>" class="form-control form-control-sm"></td>
+                        <td><input type="text" name="instructor" value="<?= htmlspecialchars($c['instructor']) ?>" class="form-control form-control-sm"></td>
+                        <td><input type="number" step="0.01" name="price" value="<?= $c['price'] ?>" class="form-control form-control-sm"></td>
+                        <td>
+                            <input type="hidden" name="course_id" value="<?= $c['id'] ?>">
+                            <button type="submit" name="save_course" class="btn btn-sm btn-primary">Save</button>
+                            <a href="?delete_course=<?= $c['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete course?')">Delete</a>
+                        </td>
+                    </form>
                 </tr>
             <?php endwhile; ?>
+            <tr>
+                <form method="post">
+                    <td>New</td>
+                    <td><input type="text" name="title" class="form-control form-control-sm" placeholder="Title" required></td>
+                    <td><input type="text" name="instructor" class="form-control form-control-sm" placeholder="Instructor" required></td>
+                    <td><input type="number" step="0.01" name="price" class="form-control form-control-sm" placeholder="Price" required></td>
+                    <td><button type="submit" name="save_course" class="btn btn-sm btn-success">Add</button></td>
+                </form>
+            </tr>
         </table>
     </div>
-    <!--tables  -->
 
+    <!--tables  -->
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
