@@ -275,17 +275,17 @@
                     valid = false;
                 }
     
-                // 5a) No runs of 3+ digits
-                if (/\d{3,}/.test(local)) {
-                    showError(emailInput, 'Email username cannot contain three consecutive digits.');
-                    valid = false;
-                }
+                // // 5a) No runs of 3+ digits
+                // if (/\d{3,}/.test(local)) {
+                //     showError(emailInput, 'Email username cannot contain three consecutive digits.');
+                //     valid = false;
+                // }
     
-                // 5b) No more than 2 digits total
-                if ((local.match(/\d/g) || []).length > 2) {
-                    showError(emailInput, 'Email username can have at most 2 digits.');
-                    valid = false;
-                }
+                // // 5b) No more than 2 digits total
+                // if ((local.match(/\d/g) || []).length > 2) {
+                //     showError(emailInput, 'Email username can have at most 2 digits.');
+                //     valid = false;
+                // }
     
                 // 6) No invalid chars in local‑part
                 if (!/^[A-Za-z0-9._%+-]+$/.test(local)) {

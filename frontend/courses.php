@@ -503,7 +503,7 @@
                     <div class="course-item shadow">
                         <div class="position-relative overflow-hidden text-light image">
                             <img class="img-fluid" src="img/course-12.png" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
+                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
                             class="px-2 py-1 fw-bold text-uppercase">PAID</div>
 
                         </div>
