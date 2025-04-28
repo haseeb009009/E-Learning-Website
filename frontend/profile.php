@@ -181,37 +181,76 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
             <p><strong>Username:</strong> <?php echo $user['username']; ?></p>
             <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
             <p><strong>Joined:</strong> <?php echo $user['created_at']; ?></p>
+            <!--  -->
+            <div>
+                <hr>
+                <?php
+                // Fetch payment status
+                $sql = "SELECT payments.*, courses.title AS course_title 
+                FROM payments 
+                JOIN courses ON payments.course_id = courses.id 
+                WHERE payments.user_id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $payment_result = $stmt->get_result();
+                ?>
+                <h2>Enrolled Courses</h2>
 
-            <hr>
-            <h2>Enrolled Courses</h2>
-            <?php if ($course_result->num_rows > 0): ?>
-                <ul class="list-group">
-                    <?php while ($row = $course_result->fetch_assoc()): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong><?php echo htmlspecialchars($row['course_name']); ?></strong>
-                            </div>
-                            <div>
-                                <?php if (isset($_SESSION['pending_course_id']) && $_SESSION['pending_course_id'] == $row['course_id']): ?>
-                                    <!-- Show Pending Box -->
-                                    <button class="btn btn-warning btn-sm" disabled>Pending Approval</button>
-                                <?php else: ?>
-                                    <!-- Show Normal Buttons -->
-                                    <a href="watch_course.php?course_id=<?php echo $row['course_id']; ?>" class="btn btn-primary btn-sm">Continue Course</a>
-                                    <form method="POST" style="display:inline;">
-                                        <input type="hidden" name="course_id" value="<?php echo $row['course_id']; ?>">
-                                        <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
-                                    </form>
-                                <?php endif; ?>
-                            </div>
-                        </li>
+                <?php if ($course_result->num_rows > 0): ?>
+                    <ul class="list-group">
+                        <?php while ($row = $course_result->fetch_assoc()): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong><?php echo htmlspecialchars($row['course_name']); ?></strong>
+                                </div>
+                                <div>
+                                    <?php if (isset($_SESSION['pending_course_id']) && $_SESSION['pending_course_id'] == $row['course_id']): ?>
+                                        <button class="btn btn-warning btn-sm" disabled>Pending Approval</button>
+                                    <?php else: ?>
+                                        <a href="watch_course.php?course_id=<?php echo $row['course_id']; ?>" class="btn btn-primary btn-sm">Continue Course</a>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="course_id" value="<?php echo $row['course_id']; ?>">
+                                            <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="text-muted">You have not enrolled in any courses yet.</p>
+                <?php endif; ?>
 
-                    <?php endwhile; ?>
-                </ul>
-            <?php else: ?>
-                <p class="text-muted">You have not enrolled in any courses yet.</p>
-            <?php endif; ?>
+                <!-- Payment section styled like list group -->
+                <?php if ($payment_result->num_rows > 0): ?>
+                    <ul class="list-group">
+                        <?php while ($payment = $payment_result->fetch_assoc()): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong><?= htmlspecialchars($payment['course_title']) ?></strong>
+                                </div>
+                                <div>
+                                    <?php if ($payment['payment_status'] === 'completed'): ?>
+                                        <a href="watch_course.php?course_id=<?= $payment['course_id'] ?>" class="btn btn-primary btn-sm">Continue Course</a>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="course_id" value="<?= $payment['course_id'] ?>">
+                                            <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
+                                        </form>
+                                    <?php elseif ($payment['payment_status'] === 'pending'): ?>
+                                        <button class="btn btn-warning btn-sm" disabled>Pending</button>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary"><?= ucfirst(htmlspecialchars($payment['payment_status'])) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="text-muted"></p>
+                <?php endif; ?>
 
+            </div>
             <!--  -->
 
 
