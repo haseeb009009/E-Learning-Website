@@ -1420,10 +1420,22 @@ $stmt->close();
             <p><strong>Instructor:</strong> <?php echo $course['instructor']; ?></p>
             <p><strong>Duration:</strong> <?php echo $course['duration']; ?></p>
 
-            <?php if ($course['price'] > 0): ?>
-                <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
+            <?php
+            $user_id = $_SESSION['user_id'];
+            $check_payment_sql = "SELECT * FROM payments WHERE user_id = ? AND course_id = ?";
+            $check_payment_stmt = $conn->prepare($check_payment_sql);
+            $check_payment_stmt->bind_param("ii", $user_id, $course_id);
+            $check_payment_stmt->execute();
+            $payment_result = $check_payment_stmt->get_result();
+
+            if ($payment_result->num_rows > 0): ?>
+                <a href="payment.php?course_id=<?php echo $course_id; ?>" class="btn btn-success">Continue</a>
             <?php else: ?>
-                <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+                <?php if ($course['price'] > 0): ?>
+                    <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
+                <?php else: ?>
+                    <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </center>
@@ -4472,21 +4484,16 @@ if (!$payment) {
     $status = $payment['payment_status'];
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>CourseCraft : payment</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
     <!-- Favicon -->
     <link href="img/iconn.png" rel="icon">
-
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5046,37 +5053,88 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
             <p><strong>Username:</strong> <?php echo $user['username']; ?></p>
             <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
             <p><strong>Joined:</strong> <?php echo $user['created_at']; ?></p>
+            <!--  -->
+            <div>
+                <hr>
+                <?php
+                // Fetch payment status
+                $sql = "SELECT payments.*, courses.title AS course_title 
+                FROM payments 
+                JOIN courses ON payments.course_id = courses.id 
+                WHERE payments.user_id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $payment_result = $stmt->get_result();
+                ?>
+                <h2>Enrolled Courses</h2>
+                <?php if ($course_result->num_rows > 0): ?>
+                    <ul class="list-group">
+                        <?php while ($row = $course_result->fetch_assoc()): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong><?php echo htmlspecialchars($row['course_name']); ?></strong>
+                                </div>
+                                <div>
+                                    <?php if (isset($_SESSION['pending_course_id']) && $_SESSION['pending_course_id'] == $row['course_id']): ?>
+                                        <button class="btn btn-warning btn-sm" disabled>Pending Approval</button>
+                                    <?php else: ?>
+                                        <a href="watch_course.php?course_id=<?php echo $row['course_id']; ?>" class="btn btn-primary btn-sm">Continue Course</a>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="course_id" value="<?php echo $row['course_id']; ?>">
+                                            <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="text-muted"></p>
+                <?php endif; ?>
+                <?php if ($payment_result->num_rows > 0): ?>
+                    <ul class="list-group">
+                        <?php while ($payment = $payment_result->fetch_assoc()): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <?php
+                                    // Check if the course is already enrolled
+                                    $is_enrolled = false;
+                                    $course_id = $payment['course_id'];
+                                    $course_result->data_seek(0); // Reset the result pointer
+                                    while ($row = $course_result->fetch_assoc()) {
+                                        if ($row['course_id'] == $course_id) {
+                                            $is_enrolled = true;
+                                            break;
+                                        }
+                                    }
+                                    // Only display the course name if it is not enrolled
+                                    if (!$is_enrolled): ?>
+                                        <strong><?= htmlspecialchars($payment['course_title']) ?></strong>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
+                                    <?php if ($payment['payment_status'] === 'completed'): ?>
+                                        <?php if (!$is_enrolled): ?>
+                                            <a href="payment.php?course_id=<?= $payment['course_id'] ?>" class="btn btn-primary btn-sm">Start Course</a>
+                                        <?php endif; ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="course_id" value="<?= $payment['course_id'] ?>">
+                                        </form>
+                                    <?php elseif ($payment['payment_status'] === 'pending'): ?>
+                                        <button class="btn btn-warning btn-sm" disabled>Pending approval</button>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary"><?= ucfirst(htmlspecialchars($payment['payment_status'])) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="text-muted"></p>
+                <?php endif; ?>
 
-            <hr>
-            <h2>Enrolled Courses</h2>
-            <?php if ($course_result->num_rows > 0): ?>
-                <ul class="list-group">
-                    <?php while ($row = $course_result->fetch_assoc()): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong><?php echo htmlspecialchars($row['course_name']); ?></strong>
-                            </div>
-                            <div>
-                                <?php if (isset($_SESSION['pending_course_id']) && $_SESSION['pending_course_id'] == $row['course_id']): ?>
-                                    <!-- Show Pending Box -->
-                                    <button class="btn btn-warning btn-sm" disabled>Pending Approval</button>
-                                <?php else: ?>
-                                    <!-- Show Normal Buttons -->
-                                    <a href="watch_course.php?course_id=<?php echo $row['course_id']; ?>" class="btn btn-primary btn-sm">Continue Course</a>
-                                    <form method="POST" style="display:inline;">
-                                        <input type="hidden" name="course_id" value="<?php echo $row['course_id']; ?>">
-                                        <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
-                                    </form>
-                                <?php endif; ?>
-                            </div>
-                        </li>
-
-                    <?php endwhile; ?>
-                </ul>
-            <?php else: ?>
-                <p class="text-muted">You have not enrolled in any courses yet.</p>
-            <?php endif; ?>
-
+            </div>
             <!--  -->
 
 
