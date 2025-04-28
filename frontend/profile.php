@@ -196,7 +196,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
                 $payment_result = $stmt->get_result();
                 ?>
                 <h2>Enrolled Courses</h2>
-
                 <?php if ($course_result->num_rows > 0): ?>
                     <ul class="list-group">
                         <?php while ($row = $course_result->fetch_assoc()): ?>
@@ -219,26 +218,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['unenroll'])) {
                         <?php endwhile; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="text-muted">You have not enrolled in any courses yet.</p>
+                    <p class="text-muted"></p>
                 <?php endif; ?>
-
-                <!-- Payment section styled like list group -->
                 <?php if ($payment_result->num_rows > 0): ?>
                     <ul class="list-group">
                         <?php while ($payment = $payment_result->fetch_assoc()): ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <strong><?= htmlspecialchars($payment['course_title']) ?></strong>
+                                    <?php
+                                    // Check if the course is already enrolled
+                                    $is_enrolled = false;
+                                    $course_id = $payment['course_id'];
+                                    $course_result->data_seek(0); // Reset the result pointer
+                                    while ($row = $course_result->fetch_assoc()) {
+                                        if ($row['course_id'] == $course_id) {
+                                            $is_enrolled = true;
+                                            break;
+                                        }
+                                    }
+                                    // Only display the course name if it is not enrolled
+                                    if (!$is_enrolled): ?>
+                                        <strong><?= htmlspecialchars($payment['course_title']) ?></strong>
+                                    <?php endif; ?>
                                 </div>
                                 <div>
                                     <?php if ($payment['payment_status'] === 'completed'): ?>
-                                        <a href="watch_course.php?course_id=<?= $payment['course_id'] ?>" class="btn btn-primary btn-sm">Continue Course</a>
+                                        <?php if (!$is_enrolled): ?>
+                                            <a href="payment.php?course_id=<?= $payment['course_id'] ?>" class="btn btn-primary btn-sm">Start Course</a>
+                                        <?php endif; ?>
                                         <form method="POST" style="display:inline;">
                                             <input type="hidden" name="course_id" value="<?= $payment['course_id'] ?>">
-                                            <button type="submit" name="unenroll" class="btn btn-danger btn-sm">Unenroll</button>
                                         </form>
                                     <?php elseif ($payment['payment_status'] === 'pending'): ?>
-                                        <button class="btn btn-warning btn-sm" disabled>Pending</button>
+                                        <button class="btn btn-warning btn-sm" disabled>Pending approval</button>
                                     <?php else: ?>
                                         <span class="badge bg-secondary"><?= ucfirst(htmlspecialchars($payment['payment_status'])) ?></span>
                                     <?php endif; ?>
