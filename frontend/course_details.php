@@ -140,10 +140,22 @@ $stmt->close();
             <p><strong>Instructor:</strong> <?php echo $course['instructor']; ?></p>
             <p><strong>Duration:</strong> <?php echo $course['duration']; ?></p>
 
-            <?php if ($course['price'] > 0): ?>
-                <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
+            <?php
+            $user_id = $_SESSION['user_id'];
+            $check_payment_sql = "SELECT * FROM payments WHERE user_id = ? AND course_id = ?";
+            $check_payment_stmt = $conn->prepare($check_payment_sql);
+            $check_payment_stmt->bind_param("ii", $user_id, $course_id);
+            $check_payment_stmt->execute();
+            $payment_result = $check_payment_stmt->get_result();
+
+            if ($payment_result->num_rows > 0): ?>
+                <a href="payment.php?course_id=<?php echo $course_id; ?>" class="btn btn-success">Continue</a>
             <?php else: ?>
-                <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+                <?php if ($course['price'] > 0): ?>
+                    <a href="payment_options.php?course_id=<?php echo $course_id; ?>" class="btn btn-warning">Buy Now - $<?php echo $course['price']; ?></a>
+                <?php else: ?>
+                    <a href="enroll.php?course_id=<?php echo $course_id; ?>" class="btn btn-primary">Enroll Now</a>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </center>
