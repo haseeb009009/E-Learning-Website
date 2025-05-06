@@ -39,11 +39,12 @@ $stmt->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 
     <meta charset="utf-8">
-    <title>CourseCraft  : Courses</title>
+    <title>CourseCraft : Courses</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -76,6 +77,7 @@ $stmt->close();
 
     <title><?php echo $course['title']; ?> - Course</title>
 </head>
+
 <body>
 
 
@@ -85,13 +87,13 @@ $stmt->close();
             <span class="sr-only">Loading...</span>
         </div>
     </div> -->
-            <!-- Navbar Start -->
+    <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -99,7 +101,7 @@ $stmt->close();
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
+                <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
@@ -141,28 +143,39 @@ $stmt->close();
     </div>
     <!-- Header End -->
 
-<center>
-    <div class="container">
-        <h1><?php echo $course['title']; ?></h1>
-        <p><?php echo $course['description']; ?></p>
-        
-        <!-- Course Video -->
-        <video width="100%" height="auto" controls>
-            <source src="<?php echo $course['video_url']; ?>" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        
-        <!-- Notepad Feature -->
-        <h3>Take Notes</h3>
-        <textarea id="notes" rows="6" cols="50" placeholder="Write your notes here..."></textarea>
-        <br>
-        <button class="btn text-light w-10 py-1" onclick="downloadNotes()">Save Notes</button>
-    </div>
-</center>
+    <center>
+        <div class="container">
+            <h1><?php echo $course['title']; ?></h1>
+            <p><?php echo $course['description']; ?></p>
+
+            <!-- Embedded YouTube Video -->
+            <?php
+            // extract video ID from full YouTube URL
+            parse_str(parse_url($course['video_url'], PHP_URL_QUERY), $ytParams);
+            $videoId = $ytParams['v'];
+            ?>
+            <iframe width="100%" height="400"
+                src="https://www.youtube-nocookie.com/embed/<?php echo $videoId; ?>?rel=0&modestbranding=1&controls=1&disablekb=1&fs=0"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+            </iframe>
+
+
+            <!-- Notepad Feature -->
+            <h3>Take Notes</h3>
+            <textarea id="notes" rows="6" cols="50" placeholder="Write your notes here..."></textarea>
+            <br>
+            <button class="btn text-light w-10 py-1" onclick="downloadNotes()">Save Notes</button>
+        </div>
+    </center>
+
     <script>
         function downloadNotes() {
             let notes = document.getElementById("notes").value;
-            let blob = new Blob([notes], { type: "text/plain" });
+            let blob = new Blob([notes], {
+                type: "text/plain"
+            });
             let link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             link.download = "Course_Notes.txt";
@@ -170,8 +183,8 @@ $stmt->close();
         }
     </script>
 
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-4 col-md-6">
@@ -229,4 +242,5 @@ $stmt->close();
 
 
 </body>
+
 </html>
