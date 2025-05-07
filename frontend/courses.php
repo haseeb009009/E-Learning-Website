@@ -1,4 +1,32 @@
-<?php include 'auth.php'; ?>
+<?php
+include 'auth.php';
+
+$host = "localhost";
+$dbname = "lms";
+$username = "root";
+$password = "";
+
+$conn = new mysqli($host, $username, $password, $dbname);
+
+
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch courses
+$sql = "SELECT id, title, price, duration FROM courses";
+$result = $conn->query($sql);
+
+// Store results
+$courses = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $courses[] = $row;
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,509 +65,125 @@
 </head>
 
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
-
-
-    <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <img src="img/iconn.png" alt="" height="50px">
-            <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+    <div>
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
-        </a>
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
-                <a href="courses.php" class="nav-item nav-link">Courses</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
-                    <div class="dropdown-menu fade-down m-0">
-                        <a href="about.php" class="dropdown-item">About</a>
-                        <a href="team.php" class="dropdown-item">Our Team</a>
-                        <a href="contact.php" class="dropdown-item">Contact</a>
-                        <a href="instructor.php" class="dropdown-item">Our instructors</a>
-                        <a href="testimonial.php" class="dropdown-item">Testimonial</a>
-                    </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+            <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+                <img src="img/iconn.png" alt="" height="50px">
+                <div class="ms-2">
+                    <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                    <p class="m-0" style="font-size: 12px;">E-learning platform</p>
                 </div>
-                <a href="contact.php" class="nav-item nav-link"></a>
-                <?php if (!isset($_SESSION['user_id'])): ?>
-                    <a href="login.html" class="nav-item nav-link"><i class="fa fa-user"></i>login</a>
-                <?php endif; ?>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="logout.php" class="nav-item nav-link">Logout</a>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="profile.php" class="nav-item nav-link">Profile</a>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="index.php" class="nav-item nav-link ">Home</a>
+                    <a href="courses.php" class="nav-item nav-link">Courses</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
+                        <div class="dropdown-menu fade-down m-0">
+                            <a href="about.php" class="dropdown-item">About</a>
+                            <a href="team.php" class="dropdown-item">Our Team</a>
+                            <a href="contact.php" class="dropdown-item">Contact</a>
+                            <a href="instructor.php" class="dropdown-item">Our instructors</a>
+                            <a href="testimonial.php" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div>
+                    <a href="contact.php" class="nav-item nav-link"></a>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <a href="login.html" class="nav-item nav-link"><i class="fa fa-user"></i>login</a>
                     <?php endif; ?>
-                <?php endif; ?>
-                <a href="#" class="nav-item nav-link">
-                    <div id="google_translate_element">
-                    </div>
-                </a>
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="logout.php" class="nav-item nav-link">Logout</a>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a href="profile.php" class="nav-item nav-link">Profile</a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <a href="#" class="nav-item nav-link">
+                        <div id="google_translate_element">
+                        </div>
+                    </a>
+                </div>
             </div>
-        </div>
-    </nav>
-    <!-- Navbar End -->
+        </nav>
+        <!-- Navbar End -->
 
-    <!-- Header Start -->
-    <div class="container-fluid bg-primary py-5 mb-5 page-header">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 text-center">
-                    <h1 class="display-3 text-white animated slideInDown">Courses</h1>
+        <!-- Header Start -->
+        <div class="container-fluid bg-primary py-5 mb-5 page-header">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10 text-center">
+                        <h1 class="display-3 text-white animated slideInDown">Courses</h1>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- Header End -->
     </div>
-    <!-- Header End -->
+<!-- Courses Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center px-3">Popular Courses</h6>
+            <h1 class="mb-5" style="color: #fb873f;">Explore new and trending free online courses</h1>
+        </div>
+        <div class="row mb-4">
+            <!-- Filter section (same as before) -->
+        </div>
 
-
-
-
-
-    <!-- Courses Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center px-3">Popular Courses</h6>
-                <h1 class="mb-5" style="color: #fb873f;">Explore new and trending free online courses</h1>
+        <div class="row g-4 py-2">
+            <?php foreach ($courses as $course): ?>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="course-item shadow">
+                    <div class="position-relative overflow-hidden text-light image">
+                        <img class="img-fluid" src="img/course-<?= $course['id'] ?>.jpg" alt="">
+                        <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:<?= strtoupper($course['price']) === 'FREE' ? '#fb873f' : '#0ed44c'; ?>;"
+                            class="px-2 py-1 fw-bold text-uppercase">
+                            <?= htmlspecialchars($course['price']) ?>
+                        </div>
+                    </div>
+                    <div class="p-2 pb-0">
+                        <h5 class="mb-1">
+                            <a href="course_details.php?course_id=<?= $course['id'] ?>" class="text-dark">
+                                <?= htmlspecialchars($course['title']) ?>
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="d-flex">
+                        <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>4.5</small>
+                        <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>Learners</small>
+                        <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user me-2"></i>Beginner</small>
+                    </div>
+                    <div class="d-flex">
+                        <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i><?= htmlspecialchars($course['duration']) ?> Hrs</small>
+                        <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
+                            <a href="course_details.php?course_id=<?= $course['id'] ?>">Enroll Now</a>
+                            <i class="fa fa-chevron-right me-2 fs-10"></i>
+                        </small>
+                    </div>
+                </div>
             </div>
-            <div class="row mb-4">
-    <div class="col-md-4">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search courses by name...">
-    </div>
-    <div class="col-md-2">
-        <select id="levelFilter" class="form-control">
-            <option value="">All Levels</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <select id="priceFilter" class="form-control">
-            <option value="">All</option>
-            <option value="FREE">Free</option>
-            <option value="PAID">Paid</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <select id="durationFilter" class="form-control">
-            <option value="">All Durations</option>
-            <option value="0-2">0-2 hrs</option>
-            <option value="2-4">2-4 hrs</option>
-            <option value="4+">4+ hrs</option>
-        </select>
-    </div>
-    <div class="col-md-1">
-        <button id="resetBtn" class="btn btn-secondary w-100">Reset</button>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
+<!-- Courses End -->
 
-            <div class="row g-4 py-2">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-1.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1"><a href="single.html" class="text-dark">HTML Course for Beginners</a> </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.55</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>5.8L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>2.0
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=1">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <!-- Courses end -->
-
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-2.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                                class="px-2 py-1 fw-bold text-uppercase">PAID</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Front End Development-CSS
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.55</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>5.2L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>4.0
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=2">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-3.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Introduction to JavaScript
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.46</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>76L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>2.5
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=3">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-4.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                                class="px-2 py-1 fw-bold text-uppercase">PAID</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Python Programming
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                3.54</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>3.3L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>3.0
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=4">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-5.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">SQL for Data Science
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-1"><i class="fa fa-star text-warning me-2"></i>
-                                4.54</small>
-                            <small class="flex-fill text-center py-1 px-1"><i class="fa fa-user-graduate me-2"></i>1.3L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-1"><i
-                                    class="fa fa-user me-2"></i>Intermediate</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>5.0
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=5">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-6.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">ChatGPT for Beginners
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                3.55</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>3.5L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>4.5
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=6">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-7.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">AWS for Beginners
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.53</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>1L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>3.0
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=7">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-8.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                                class="px-2 py-1 fw-bold text-uppercase">PAID</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Microsoft Azure Essentials
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-1"><i class="fa fa-star text-warning me-2"></i>
-                                4.64</small>
-                            <small class="flex-fill text-center py-1 px-1"><i class="fa fa-user-graduate me-2"></i>4.4L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-1"><i
-                                    class="fa fa-user me-2"></i>Intermediate</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>3.5
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=8">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-9.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Introduction to MS Excel</h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.6</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>4.2L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>3.5
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=9">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-10.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                                class="px-2 py-1 fw-bold text-uppercase">PAID</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Statistics For Data Science
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-1"><i class="fa fa-star text-warning me-2"></i>
-                                4.55</small>
-                            <small class="flex-fill text-center py-1 px-1"><i class="fa fa-user-graduate me-2"></i>5.3L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-1"><i
-                                    class="fa fa-user me-2"></i>Intermediate</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>2.5
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=10">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-11.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">Java Programming
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.45</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>5L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>2.0
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"> </small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=11">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item shadow">
-                        <div class="position-relative overflow-hidden text-light image">
-                            <img class="img-fluid" src="img/course-12.png" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                            class="px-2 py-1 fw-bold text-uppercase">PAID</div>
-
-                        </div>
-                        <div class="p-2 pb-0">
-
-                            <h5 class="mb-1">C for Beginners
-                            </h5>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-star text-warning me-2"></i>
-                                4.5</small>
-                            <small class="flex-fill text-center py-1 px-2"><i class="fa fa-user-graduate me-2"></i>1.1L+
-                                Learners
-                            </small>
-                            <small class="flex-fill text-center py-1 px-2"><i
-                                    class="fa fa-user me-2"></i>Beginner</small>
-                        </div>
-                        <div class="d-flex">
-                            <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>1.5
-                                Hrs</small>
-                            <small class="py-1 px-2 fw-bold fs-6 text-center"></small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=12">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <!-- Courses End -->
-
-
-<!-- Footer Start -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-4 col-md-6">
@@ -608,43 +252,43 @@
     <script src="js/main.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-        const levelFilter = document.getElementById('levelFilter');
-        const priceFilter = document.getElementById('priceFilter');
-        const durationFilter = document.getElementById('durationFilter');
-        const courseCards = document.querySelectorAll('.course-item');
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const levelFilter = document.getElementById('levelFilter');
+            const priceFilter = document.getElementById('priceFilter');
+            const durationFilter = document.getElementById('durationFilter');
+            const courseCards = document.querySelectorAll('.course-item');
 
-        function filterCourses() {
-            const searchText = searchInput.value.toLowerCase();
-            const level = levelFilter.value;
-            const price = priceFilter.value;
-            const duration = durationFilter.value;
+            function filterCourses() {
+                const searchText = searchInput.value.toLowerCase();
+                const level = levelFilter.value;
+                const price = priceFilter.value;
+                const duration = durationFilter.value;
 
-            courseCards.forEach(card => {
-                const title = card.querySelector('h5').innerText.toLowerCase();
-                const courseLevel = card.innerText.includes("Intermediate") ? "Intermediate" : "Beginner";
-                const coursePrice = card.innerText.includes("PAID") ? "PAID" : "FREE";
-                const courseDuration = parseFloat(card.querySelector('.fa-clock').parentElement.innerText);
+                courseCards.forEach(card => {
+                    const title = card.querySelector('h5').innerText.toLowerCase();
+                    const courseLevel = card.innerText.includes("Intermediate") ? "Intermediate" : "Beginner";
+                    const coursePrice = card.innerText.includes("PAID") ? "PAID" : "FREE";
+                    const courseDuration = parseFloat(card.querySelector('.fa-clock').parentElement.innerText);
 
-                let show = title.includes(searchText);
-                if (level && courseLevel !== level) show = false;
-                if (price && coursePrice !== price) show = false;
-                if (duration) {
-                    if (duration === '0-2' && !(courseDuration >= 0 && courseDuration <= 2)) show = false;
-                    if (duration === '2-4' && !(courseDuration > 2 && courseDuration <= 4)) show = false;
-                    if (duration === '4+' && !(courseDuration > 4)) show = false;
-                }
+                    let show = title.includes(searchText);
+                    if (level && courseLevel !== level) show = false;
+                    if (price && coursePrice !== price) show = false;
+                    if (duration) {
+                        if (duration === '0-2' && !(courseDuration >= 0 && courseDuration <= 2)) show = false;
+                        if (duration === '2-4' && !(courseDuration > 2 && courseDuration <= 4)) show = false;
+                        if (duration === '4+' && !(courseDuration > 4)) show = false;
+                    }
 
-                card.style.display = show ? '' : 'none';
+                    card.style.display = show ? '' : 'none';
+                });
+            }
+
+            [searchInput, levelFilter, priceFilter, durationFilter].forEach(input => {
+                input.addEventListener('input', filterCourses);
             });
-        }
-
-        [searchInput, levelFilter, priceFilter, durationFilter].forEach(input => {
-            input.addEventListener('input', filterCourses);
         });
-    });
-</script>
+    </script>
 
 </body>
 

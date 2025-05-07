@@ -35,6 +35,22 @@ if ($result->num_rows > 0) {
     exit;
 }
 $stmt->close();
+
+
+if ($course['price'] > 0) {
+    // Check if payment is completed for this user and course
+    $payment_sql = "SELECT * FROM payments WHERE user_id = ? AND course_id = ? AND payment_status = 'completed'";
+    $payment_stmt = $conn->prepare($payment_sql);
+    $payment_stmt->bind_param("ii", $user_id, $course_id);
+    $payment_stmt->execute();
+    $payment_result = $payment_stmt->get_result();
+
+    if ($payment_result->num_rows === 0) {
+        echo "<script>alert('You must purchase this course to access it!'); window.location.href='courses.php';</script>";
+        exit;
+    }
+    $payment_stmt->close();
+}
 ?>
 
 <!DOCTYPE html>
