@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2025 at 08:44 AM
+-- Generation Time: May 07, 2025 at 03:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,8 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `email`, `password`) VALUES
-(1, 'admin@example.com', 'admin@example.com');
+(1, 'admin@example.com', 'admin@example.com'),
+(2, 'admin2@gmail.com', 'admin2@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -61,18 +62,18 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`id`, `title`, `description`, `instructor`, `duration`, `price`, `video_url`) VALUES
-(1, 'HTML Course for Beginners', 'learn HTML  for from scratch.', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
-(2, 'Front End Development-CSS', 'Introduction to Front End Development-CSS', 'Jane Smith', '4.55', 10.00, 'videos/js_basics.mp4'),
-(3, 'Introduction to JavaScript', 'Learn JavaScript', 'John Doe', '2.5', 0.00, 'videos/php_intro.mp4'),
-(4, 'Python Programming', 'Introduction to Python programming.', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
-(5, 'SQL for Data Science', 'LearnSQL from scratch.', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
-(6, 'ChatGPT for Beginners', 'learn how to use ChatGPT ', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
-(7, 'AWS for Beginners', 'Learn AWS from scratch', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
-(8, 'Microsoft Azure Essentials', 'learn Microsoft Azure Essentials', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
-(9, 'Introduction to MS Excel', 'Learn how  to use  MS Excel', 'John Doe', '2.0', 0.00, 'videos/php_intro.mp4'),
-(10, 'Statistics For Data Science', 'learn Statistics For Data Science', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4'),
-(11, 'Java Programming', 'Learn Java Programming', 'John Doe', '2.0', 10.00, 'videos/php_intro.mp4'),
-(12, 'C for Beginners', 'learn C Programming language', 'Jane Smith', '3.5', 10.00, 'videos/js_basics.mp4');
+(1, 'HTML Course for Beginners', 'learn HTML  for from scratch.', 'John Doe', '2.0', 0.00, 'https://www.youtube.com/embed/rklidcZ-aLU?si=w8wUvwhETMP4QrlR'),
+(2, 'Front End Development-CSS', 'Introduction to Front End Development-CSS', 'Jane Smith', '4.55', 10.00, ''),
+(3, 'Introduction to JavaScript', 'Learn JavaScript', 'John Doe', '2.5', 0.00, 'https://www.youtube.com/embed/W6NZfCO5SIk?si=L50KeTO1IRLWUYUIhttps://www.youtube.com/embed/W6NZfCO5SIk?si=L50KeTO1IRLWUYUI'),
+(4, 'Python Programming', 'Introduction to Python programming.', 'Jane Smith', '3.5', 10.00, 'https://www.youtube.com/embed/XIR20HH8mNY?si=WeJHI2lfN-kdqraE'),
+(5, 'SQL for Data Science', 'LearnSQL from scratch.', 'John Doe', '2.0', 0.00, 'https://www.youtube.com/embed/Ed0gxXMmP60?si=pTCupGvSeHLFC4v3'),
+(6, 'ChatGPT for Beginners', 'learn how to use ChatGPT ', 'Jane Smith', '3.5', 10.00, ''),
+(7, 'AWS for Beginners', 'Learn AWS from scratch', 'John Doe', '2.0', 0.00, 'https://www.youtube.com/embed/BSGcQi2WNPg?si=4Nnq_nGtYKYMyr7r'),
+(8, 'Microsoft Azure Essentials', 'learn Microsoft Azure Essentials', 'Jane Smith', '3.5', 10.00, ''),
+(9, 'Introduction to MS Excel', 'Learn how  to use  MS Excel', 'John Doe', '2.0', 0.00, 'https://www.youtube/OX-iyb-21tk?si=9jYYPfqfDlqyvB7W'),
+(10, 'Statistics For Data Science', 'learn Statistics For Data Science', 'Jane Smith', '3.5', 10.00, ''),
+(11, 'Java Programming', 'Learn Java Programming', 'John Doe', '2.0', 10.00, ''),
+(12, 'C for Beginners', 'learn C Programming language', 'Jane Smith', '3.5', 10.00, '');
 
 -- --------------------------------------------------------
 
@@ -94,7 +95,8 @@ CREATE TABLE `enrollments` (
 --
 
 INSERT INTO `enrollments` (`id`, `user_id`, `user_email`, `course_id`, `course_name`, `enrolled_at`) VALUES
-(37, 98, 'aliHaseebrehman6375@gmail.com', 4, 'Python Programming', '2025-04-27 05:30:36');
+(63, 101, 'HASEEB', 1, 'HTML Course for Beginners', '2025-05-07 00:14:02'),
+(64, 101, 'HASEEB', 3, 'Introduction to JavaScript', '2025-05-07 00:56:25');
 
 -- --------------------------------------------------------
 
@@ -110,13 +112,6 @@ CREATE TABLE `payments` (
   `payment_status` enum('pending','completed') DEFAULT 'pending',
   `payment_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`id`, `user_id`, `course_id`, `amount`, `payment_status`, `payment_date`) VALUES
-(11, 98, 4, 10.00, 'completed', '2025-04-27 05:30:00');
 
 -- --------------------------------------------------------
 
@@ -138,7 +133,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `created_at`, `reset_token`) VALUES
-(98, 'aliHaseebrehman6375@gmail.com', 'aliHaseebrehman6375@gmail.com', '', '2025-04-27 05:18:24', NULL);
+(101, 'HASEEB', 'Haseebrehman63@gmail.com', 'Haseebrehman63@gmail.com', '2025-04-29 10:03:24', NULL);
 
 --
 -- Indexes for dumped tables
@@ -186,7 +181,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `courses`
@@ -198,19 +193,19 @@ ALTER TABLE `courses`
 -- AUTO_INCREMENT for table `enrollments`
 --
 ALTER TABLE `enrollments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- Constraints for dumped tables
