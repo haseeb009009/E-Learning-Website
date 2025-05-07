@@ -41,12 +41,12 @@ if (isset($_GET['delete_user'])) {
 if (isset($_POST['save_course'])) {
     if (!empty($_POST['course_id'])) {
         $stmt = $conn->prepare("UPDATE courses SET title=?,  price=?, video_url=? WHERE id=?");
-        $stmt->bind_param("ssdsi", $_POST['title'],  $_POST['price'], $_POST['video_url'], $_POST['course_id']);
+        $stmt->bind_param("sssi", $_POST['title'],  $_POST['price'], $_POST['video_url'], $_POST['course_id']);
         $stmt->execute();
         header("Location: admin_dashboard.php");
     } else {
-        $stmt = $conn->prepare("INSERT INTO courses (title, price, video_url) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssds", $_POST['title'], $_POST['price'], $_POST['video_url']);
+        $stmt = $conn->prepare("INSERT INTO courses (title, price, video_url) VALUES (?, ?, ?)");
+        $stmt->bind_param("ssd", $_POST['title'], $_POST['price'], $_POST['video_url']);
         $stmt->execute();
         header("Location: admin_dashboard.php");
     }

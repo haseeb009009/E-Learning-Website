@@ -116,9 +116,9 @@
             <div class="row g-4">
                 <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <h5>Get In Touch</h5>
-                    <p class="mb-4">I'm happy to help! If you're looking for contact information or details about
-                        CourseCraft's online free courses website for e-learning, I don't have real-time browsing
-                        capabilities to access current websites or specific contact details.</p>
+                    <p class="mb-4">we are happy to help! If you're looking for contact information or details about our services, you've come to the right place. Whether you have questions about our courses, feedback to share, or just want to say hello, we're here for you. Please feel free to reach out to us using the information provided below. We look forward to hearing from you!
+
+For inquiries related to CourseCraft's courses, please contact us at <strong>CourseCraft</strong>  </p>
                     <div class="d-flex align-items-center mb-3">
                         <div class="d-flex align-items-center justify-content-center flex-shrink-0"
                             style="width: 50px; height: 50px; background-color: #fb873f;">
@@ -126,7 +126,7 @@
                         </div>
                         <div class="ms-3">
                             <h5>Office</h5>
-                            <p class="mb-0">123 Street, karachi</p>
+                            <p class="mb-0">123 Street, Vehari</p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mb-3">
@@ -136,7 +136,7 @@
                         </div>
                         <div class="ms-3">
                             <h5>Mobile</h5>
-                            <p class="mb-0">+923085791717</p>
+                            <p class="mb-0">+923047727722</p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
@@ -182,7 +182,7 @@
                             </div>
                             <div class="col-12">
                                 <button class="btn btn-primary w-100 py-3" type="submit"><a
-                                        href="mailto:keertidvcorai@gmail.com" class="text-decoration-none"
+                                        href="choudharyhaseeb86@gmail.com" class="text-decoration-none"
                                         style="color: #fff;" type="submit">Send Message</a></button>
                             </div>
                         </div>
