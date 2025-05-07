@@ -40,20 +40,18 @@ if (isset($_GET['delete_user'])) {
 // Handle Add/Edit/Delete Courses
 if (isset($_POST['save_course'])) {
     if (!empty($_POST['course_id'])) {
-        $stmt = $conn->prepare("UPDATE courses SET title=?, instructor=?, price=?, video_url=? WHERE id=?");
-        $stmt->bind_param("ssdsi", $_POST['title'], $_POST['instructor'], $_POST['price'], $_POST['video_url'], $_POST['course_id']);
+        $stmt = $conn->prepare("UPDATE courses SET title=?,  price=?, video_url=? WHERE id=?");
+        $stmt->bind_param("ssdsi", $_POST['title'],  $_POST['price'], $_POST['video_url'], $_POST['course_id']);
         $stmt->execute();
         header("Location: admin_dashboard.php");
     } else {
-        $stmt = $conn->prepare("INSERT INTO courses (title, instructor, price, video_url) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssds", $_POST['title'], $_POST['instructor'], $_POST['price'], $_POST['video_url']);
+        $stmt = $conn->prepare("INSERT INTO courses (title, price, video_url) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssds", $_POST['title'], $_POST['price'], $_POST['video_url']);
         $stmt->execute();
         header("Location: admin_dashboard.php");
     }
     exit;
 }
-
-
 if (isset($_GET['delete_course'])) {
     $conn->query("DELETE FROM courses WHERE id=" . (int)$_GET['delete_course']);
     header("Location: admin_dashboard.php");
@@ -306,7 +304,6 @@ if ($payment_search != '') {
                         <tr>
                             <th>ID</th>
                             <th>Title</th>
-                            <th>Instructor</th>
                             <th>Price</th>
                             <th>video url</th>
                             <th>Action</th>
@@ -318,7 +315,6 @@ if ($payment_search != '') {
                                 <form method="post">
                                     <td><?= $c['id'] ?></td>
                                     <td><input type="text" name="title" value="<?= htmlspecialchars($c['title']) ?>" class="form-control form-control-sm"></td>
-                                    <td><input type="text" name="instructor" value="<?= htmlspecialchars($c['instructor']) ?>" class="form-control form-control-sm"></td>
                                     <td><input type="number" step="0.01" name="price" value="<?= $c['price'] ?>" class="form-control form-control-sm"></td>
                                     <td><input type="text" name="video_url" value="<?= htmlspecialchars($c['video_url']) ?>" class="form-control form-control-sm"></td>
                                     <td>
@@ -333,8 +329,8 @@ if ($payment_search != '') {
                             <form method="post">
                                 <td>New</td>
                                 <td><input type="text" name="title" class="form-control form-control-sm" placeholder="Title" required></td>
-                                <td><input type="text" name="instructor" class="form-control form-control-sm" placeholder="Instructor" required></td>
                                 <td><input type="number" step="0.01" name="price" class="form-control form-control-sm" placeholder="Price" required></td>
+                                <td><input type="text" name="video_url" class="form-control form-control-sm" placeholder="url" required></td>
                                 <td><button type="submit" name="save_course" class="btn btn-sm btn-success">Add</button></td>
                             </form>
                         </tr>

@@ -98,8 +98,7 @@ $stmt->close();
                         <a href="about.php" class="dropdown-item">About</a>
                         <a href="team.php" class="dropdown-item">Our Team</a>
                         <a href="contact.php" class="dropdown-item">Contact</a>
-                        <a href="instructor.php" class="dropdown-item">Our instructors</a>
-                        <a href="testimonial.php" class="dropdown-item">Testimonial</a>
+
                     </div>
                 </div>
                 <a href="contact.php" class="nav-item nav-link"></a>
@@ -137,8 +136,7 @@ $stmt->close();
         <div class="container">
             <h1><?php echo $course['title']; ?></h1>
             <p><?php echo $course['description']; ?></p>
-            <p><strong>Instructor:</strong> <?php echo $course['instructor']; ?></p>
-            <p><strong>Duration:</strong> <?php echo $course['duration']; ?></p>
+            <p><strong>Duration:</strong> <?php echo $course['duration']; ?><strong>hours</strong></p>
 
             <?php
             $user_id = $_SESSION['user_id'];

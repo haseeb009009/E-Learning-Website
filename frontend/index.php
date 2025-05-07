@@ -1,4 +1,6 @@
-<?php session_start(); ?>
+<?php session_start();
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -72,8 +74,7 @@
                         <a href="about.php" class="dropdown-item">About</a>
                         <a href="team.php" class="dropdown-item">Our Team</a>
                         <a href="contact.php" class="dropdown-item">Contact</a>
-                        <a href="instructor.php" class="dropdown-item">Our instructors</a>
-                        <a href="testimonial.php" class="dropdown-item">Testimonial</a>
+
                     </div>
                 </div>
                 <a href="contact.php" class="nav-item nav-link"></a>
@@ -224,7 +225,7 @@
                     <p class="mb-4"> Welcom to CourseCraft , your gateway to boundless learning opportunities.</p>
                     <div class="row gy-2 gx-4 mb-4">
                         <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Comprehensive Course Catalog</p>
+                            <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Comprehensive Course Cataloge</p>
                         </div>
                         <div class="col-sm-6">
                             <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Certification and Recognition</p>
@@ -371,8 +372,7 @@
                     <div class="course-item shadow">
                         <div class="position-relative overflow-hidden text-light image">
                             <img class="img-fluid" src="img/course-1.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
+
                         </div>
                         <div class="p-2 pb-0">
                             <h5 class="mb-1"><a href="single.html" class="text-dark">HTML Course for Beginners</a> </h5>
@@ -390,9 +390,8 @@
                             <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>2.0
                                 Hrs</small>
                             <small class="py-1 px-2 fw-bold fs-6 text-center"></small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=1">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
+
+
                         </div>
                     </div>
                 </div>
@@ -400,8 +399,8 @@
                     <div class="course-item shadow">
                         <div class="position-relative overflow-hidden text-light image">
                             <img class="img-fluid" src="img/course-2.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                                class="px-2 py-1 fw-bold text-uppercase">PAID</div>
+
+
                         </div>
                         <div class="p-2 pb-0">
                             <h5 class="mb-1">Front End Development-CSS
@@ -420,9 +419,7 @@
                             <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>4.0
                                 Hrs</small>
                             <small class="py-1 px-2 fw-bold fs-6 text-center"></small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=2">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
+
                         </div>
                     </div>
                 </div>
@@ -430,8 +427,7 @@
                     <div class="course-item shadow">
                         <div class="position-relative overflow-hidden text-light image">
                             <img class="img-fluid" src="img/course-3.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#fb873f;"
-                                class="px-2 py-1 fw-bold text-uppercase">FREE</div>
+
 
                         </div>
                         <div class="p-2 pb-0">
@@ -452,9 +448,7 @@
                             <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>2.5
                                 Hrs</small>
                             <small class="py-1 px-2 fw-bold fs-6 text-center"></small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=3">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
+
                         </div>
                     </div>
                 </div>
@@ -462,8 +456,6 @@
                     <div class="course-item shadow">
                         <div class="position-relative overflow-hidden text-light image">
                             <img class="img-fluid" src="img/course-4.jpg" alt="">
-                            <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:#0ed44c;"
-                                class="px-2 py-1 fw-bold text-uppercase">PAID</div>
 
                         </div>
                         <div class="p-2 pb-0">
@@ -484,9 +476,6 @@
                             <small class="flex-fill text-left p-2 px-2"><i class="fa fa-clock me-2"></i>3.0
                                 Hrs</small>
                             <small class="py-1 px-2 fw-bold fs-6 text-center"></small>
-                            <small class=" text-primary py-1 px-2 fw-bold fs-6" style="float:right;">
-                                <a href="course_details.php?course_id=4">Enroll Now</a><i class="fa fa-chevron-right me-2 fs-10"></i>
-                            </small>
                         </div>
                     </div>
                 </div>
@@ -496,7 +485,7 @@
     </div>
     </div>
     <div class="container text-center">
-        <a class="btn text-light py-3 px-5 mt-2 mb-5" href="courses.php">All Courses</a>
+        <a class="btn text-light py-3 px-5 mt-2 mb-5" href="courses.php">Access All Courses</a>
     </div>
     <!-- Courses End -->
 
@@ -518,7 +507,7 @@
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    The CourseCraft is an initiative taken by CourseCraft , where we offer 10+  online courses in cutting-edge technologies and have successfully enrolled a learners across all domains. CourseCraft currently covers courses on Data Science,  Artificial Intelligence, Cloud Computing, Software Development, and many more.
+                                    The CourseCraft is an initiative taken by CourseCraft , where we offer 10+ online courses in cutting-edge technologies and have successfully enrolled a learners across all domains. CourseCraft currently covers courses on Data Science, Artificial Intelligence, Cloud Computing, Software Development, and many more.
                                 </div>
                             </div>
                         </div>
@@ -530,7 +519,7 @@
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    CourseCraft is an excellent choice for free courses with certificates because of the high quality of the learning content. The courses are well-crafted, offer a great learning experience, and  making them ideal for learners in identifying what works best for their career goals.
+                                    CourseCraft is an excellent choice for free courses with certificates because of the high quality of the learning content. The courses are well-crafted, offer a great learning experience, and making them ideal for learners in identifying what works best for their career goals.
                                 </div>
                             </div>
                         </div>

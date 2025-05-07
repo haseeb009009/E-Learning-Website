@@ -63,7 +63,6 @@ if ($result && $result->num_rows > 0) {
     <link href="css/style.css" rel="stylesheet">
 
 </head>
-
 <body>
     <div>
         <!-- Spinner Start -->
@@ -134,25 +133,59 @@ if ($result && $result->num_rows > 0) {
         <!-- Header End -->
     </div>
 <!-- Courses Start -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h6 class="section-title bg-white text-center px-3">Popular Courses</h6>
-            <h1 class="mb-5" style="color: #fb873f;">Explore new and trending free online courses</h1>
-        </div>
-        <div class="row mb-4">
-            <!-- Filter section (same as before) -->
-        </div>
+<div class="container mb-5">
+    <form method="GET" action="courses.php" class="d-flex">
+        <input type="text" name="search" class="form-control me-2" placeholder="Search for courses..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+        <select name="filter" class="form-control me-2">
+            <option value="">All</option>
+            <option value="free" <?= isset($_GET['filter']) && $_GET['filter'] === 'free' ? 'selected' : '' ?>>Free</option>
+            <option value="paid" <?= isset($_GET['filter']) && $_GET['filter'] === 'paid' ? 'selected' : '' ?>>Paid</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+
+<?php
+if ((isset($_GET['search']) && !empty(trim($_GET['search']))) || isset($_GET['filter'])) {
+    $searchTerm = isset($_GET['search']) ? $conn->real_escape_string(trim($_GET['search'])) : '';
+    $filter = isset($_GET['filter']) ? $_GET['filter'] : '';
+
+    $sql = "SELECT id, title, price, duration FROM courses WHERE 1=1";
+
+    if (!empty($searchTerm)) {
+        $sql .= " AND title LIKE '%$searchTerm%'";
+    }
+
+    if ($filter === 'free') {
+        $sql .= " AND price = 0";
+    } elseif ($filter === 'paid') {
+        $sql .= " AND price > 0";
+    }
+
+    $result = $conn->query($sql);
+
+    $courses = [];
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $courses[] = $row;
+        }
+    }
+}
+?>
 
         <div class="row g-4 py-2">
-            <?php foreach ($courses as $course): ?>
+                <?php foreach ($courses as $course): 
+                $isFree = floatval($course['price']) == 0.0;
+                $label = $isFree ? 'FREE' : 'PAID';
+                $labelColor = $isFree ? '#fb873f' : '#0ed44c';
+            ?>
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="course-item shadow">
                     <div class="position-relative overflow-hidden text-light image">
                         <img class="img-fluid" src="img/course-<?= $course['id'] ?>.jpg" alt="">
-                        <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:<?= strtoupper($course['price']) === 'FREE' ? '#fb873f' : '#0ed44c'; ?>;"
+                        <div style="position:absolute;top: 15px;left: 16px; font-size:12px; border-radius:3px; background-color:<?= $labelColor ?>;"
                             class="px-2 py-1 fw-bold text-uppercase">
-                            <?= htmlspecialchars($course['price']) ?>
+                            <?= $label ?>
                         </div>
                     </div>
                     <div class="p-2 pb-0">
@@ -251,44 +284,7 @@ if ($result && $result->num_rows > 0) {
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            const levelFilter = document.getElementById('levelFilter');
-            const priceFilter = document.getElementById('priceFilter');
-            const durationFilter = document.getElementById('durationFilter');
-            const courseCards = document.querySelectorAll('.course-item');
 
-            function filterCourses() {
-                const searchText = searchInput.value.toLowerCase();
-                const level = levelFilter.value;
-                const price = priceFilter.value;
-                const duration = durationFilter.value;
-
-                courseCards.forEach(card => {
-                    const title = card.querySelector('h5').innerText.toLowerCase();
-                    const courseLevel = card.innerText.includes("Intermediate") ? "Intermediate" : "Beginner";
-                    const coursePrice = card.innerText.includes("PAID") ? "PAID" : "FREE";
-                    const courseDuration = parseFloat(card.querySelector('.fa-clock').parentElement.innerText);
-
-                    let show = title.includes(searchText);
-                    if (level && courseLevel !== level) show = false;
-                    if (price && coursePrice !== price) show = false;
-                    if (duration) {
-                        if (duration === '0-2' && !(courseDuration >= 0 && courseDuration <= 2)) show = false;
-                        if (duration === '2-4' && !(courseDuration > 2 && courseDuration <= 4)) show = false;
-                        if (duration === '4+' && !(courseDuration > 4)) show = false;
-                    }
-
-                    card.style.display = show ? '' : 'none';
-                });
-            }
-
-            [searchInput, levelFilter, priceFilter, durationFilter].forEach(input => {
-                input.addEventListener('input', filterCourses);
-            });
-        });
-    </script>
 
 </body>
 
