@@ -46,7 +46,7 @@
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
-    </div> 
+    </div>
     <!-- Spinner End -->
 
 
@@ -55,8 +55,8 @@
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -157,8 +157,8 @@
             <div class="row g-2 text-center">
                 <div class="col-12 wow fadeInUp" data-wow-delay="0.3s">
                     <h1 style="color: #fb873f;">Invest in your professional goals with CourseCraft </h1>
-                    <p class="mb-5">Get unlimited access to over 90% of courses, Projects, Specializations, and
-                        Professional Certificates on Coursera, taught by top instructors.</p>
+                    <p class="mb-5">Get unlimited access to over 90% of courses, and
+                        Professional Certificates </p>
                 </div>
             </div>
             <div class="row g-4">
@@ -176,7 +176,7 @@
                         <div class="p-4">
                             <img src="img/icon2.png" alt="" width="60px" class="mb-4">
                             <h5 class="mb-3">Save money</h5>
-                            <p>Spend less money on your learning if you plan to take multiple courses this year</p>
+                            <p>Spend once Access courses forever </p>
                         </div>
                     </div>
                 </div>
@@ -221,25 +221,10 @@
                     <p class="mb-4">At CourseCraft , we believe in accessible, innovative learning experiences that
                         adapt to your schedule and learning style. Join us in embracing the future of education and
                         unlock your potential with our immersive online courses.</p>
-                    <p class="mb-4"> Welcom to CourseCraft , your gateway to boundless learning opportunities. We're
-                        dedicated to democratizing education, offering a diverse range of courses taught by industry
-                        experts. Our mission is to empower learners worldwide, fostering a community-driven platform
-                        where knowledge knows no limits.</p>
+                    <p class="mb-4"> Welcom to CourseCraft , your gateway to boundless learning opportunities.</p>
                     <div class="row gy-2 gx-4 mb-4">
                         <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right  me-2"></i>Expert Instructors</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Live Interactive Sessions</p>
-                        </div>
-                        <div class="col-sm-6">
                             <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Comprehensive Course Catalog</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Community Engagement</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Personalized Learning Paths</p>
                         </div>
                         <div class="col-sm-6">
                             <p class="mb-0"><i class="fa fa-arrow-right me-2"></i>Certification and Recognition</p>
@@ -262,8 +247,8 @@
                 <div class="col-lg-6 p-5 wow fadeInUp" data-wow-delay="0.3s">
 
                     <h1 class="mb-4" style="color: #fb873f;">Explore Free Courses</h1>
-                    <p class="mb-4">Start your online learning journey at Great Learning Academy for free with our
-                        short-term basic courses across various in-demand domains.</p>
+                    <p class="mb-4">Start your online learning journey at <strong>CourseCraft </strong>for free with our
+                        courses across various in-demand domains.</p>
 
                     <a class="btn text-light py-3 px-5 mt-2" href="courses.php">Start For Free</a>
                 </div>
@@ -515,35 +500,6 @@
     </div>
     <!-- Courses End -->
 
-
-    <!-- Banner-2 Start -->
-    <!-- <section class="pb-5" style="background: url('img/banner-3.jpg');">
-        <div class="container-xxl mt-5">
-            <div class="container">
-                <div class="row g-5 ">
-
-                    <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
-                        <div class="position-relative h-100">
-                            <img class="img-fluid position-absolute w-100 h-100 bg-light" src="img/banner-2.png" alt=""
-                                style="object-fit: cover;">
-                        </div>
-                    </div>
-
-                    <!-- <div class="col-lg-6 p-5 wow fadeInUp" data-wow-delay="0.3s">
-
-                        <h1 class="mb-4" style="color: #fb873f;">Become an Instructor</h1>
-                        <p class="mb-4 text-white">Instructors from around the world teach millions of learners on Udemy. We provide
-                            the tools and skills to teach what you love.</p>
-
-                        <a class="btn text-light py-3 mt-2" href="instructor.php">Start Teaching Today</a>
-                    </div> -->
-
-                </div>
-            </div>
-        </div>
-    </section> -->
-    <!-- Banner-2 End -->
-
     <!-- FAQ Start  -->
     <div class="container-xxl py-5 category">
         <div class="container">
@@ -557,24 +513,24 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    What is the CourseCraft  ?
+                                    What is the CourseCraft ?
                                 </button>
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    The CourseCraft  is an initiative taken by CourseCraft , where we offer 1000+ free online courses in cutting-edge technologies and have successfully enrolled a whopping 5 Million+ learners across all domains. CourseCraft  covers courses on Data Science, Machine Learning, Artificial Intelligence, Cloud Computing, Software Development, Sales and Business Development, Digital Marketing, Big Data, and many more.
+                                    The CourseCraft is an initiative taken by CourseCraft , where we offer 10+  online courses in cutting-edge technologies and have successfully enrolled a learners across all domains. CourseCraft currently covers courses on Data Science,  Artificial Intelligence, Cloud Computing, Software Development, and many more.
                                 </div>
                             </div>
                         </div>
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Why should I choose Great Learning Academy for free courses with certificates ?
+                                    Why should I choose CourseCraft for free courses with certificates ?
                                 </button>
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    Great Learning Academy is an excellent choice for free courses with certificates because of the high quality of the learning content. The courses are well-crafted, offer a great learning experience, and are interactive and engaging, making them ideal for learners in identifying what works best for their career goals.
+                                    CourseCraft is an excellent choice for free courses with certificates because of the high quality of the learning content. The courses are well-crafted, offer a great learning experience, and  making them ideal for learners in identifying what works best for their career goals.
                                 </div>
                             </div>
                         </div>
@@ -598,27 +554,7 @@
                             </h2>
                             <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    You can click on the “Sign Up” button at the top-right of the page and register with your email address, or you can sign up using your Google Account.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                    What are the most popular free courses offered by CourseCraft  ?
-                                </button>
-                            </h2>
-                            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    CourseCraft  focuses on in-demand concepts and skills, where learners can develop industry-relevant knowledge in their chosen sector. It provides a wide range of courses in prestigious fields, assisting learners across the globe in achieving their professional goals.
-
-                                    <p>Some of the most popular free courses offered by CourseCraft  that are in high demand today include:</p>
-                                    <ul>
-                                        <li>Free Data Science Courses</li>
-                                        <li>Free Artificial Intelligence Courses</li>
-                                        <li>Free Software Courses</li>
-                                        <li>Free Cloud Computing Courses</li>
-                                    </ul>
+                                    You can click on the “Sign Up” button at the top-right of the page and register with your email address and password. After that, you can explore the courses and enroll in any course of your choice. Once you complete the course, you will receive a certificate of completion.
                                 </div>
                             </div>
                         </div>
@@ -643,8 +579,8 @@
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Contact</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, karachi</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+923085791717</p>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, Vehari</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+923047727722</p>
                     <p class="mb-2"><i class="fa fa-envelope me-3"></i>CourseCraft@gmail.com</p>
                     <div class="d-flex pt-2">
                         <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
@@ -663,7 +599,7 @@
                                 placeholder="Your email" required>
                             <button type="submit"
                                 class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2"><a
-                                    href="mailto:keertidvcorai@gmail.com">Subscribe</a></button>
+                                    href="choudharyhaseeb86@gmail.com">Subscribe</a></button>
                         </form>
                     </div>
                 </div>
