@@ -110,7 +110,7 @@
                                 <h5 class=" text-uppercase mb-3 animated slideInDown" style="color: #fb873f;">Best
                                     E-learning platform</h5>
                                 <h1 class="display-3 text-white animated slideInDown">Learn Job ready skills from free
-                                    online courses with certificates</h1>
+                                    online courses</h1>
                                 <p class=" text-white mb-4 pb-2">Explore a wide range of courses designed to enhance
                                     your expertise in technology, business, arts, and more. Start learning today!</p>
                                 <a href="about.php"

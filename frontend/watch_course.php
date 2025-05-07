@@ -200,7 +200,6 @@ if ($course['price'] > 0) {
 
             echo $embed_code;
             ?>
-
             <!-- Notepad Feature -->
             <h3>Take Notes</h3>
             <textarea id="notes" rows="2" cols="50" placeholder="Write your notes here..."></textarea>
