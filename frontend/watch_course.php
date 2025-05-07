@@ -152,10 +152,10 @@ $stmt->close();
             <?php
             // extract video ID from full YouTube URL
             parse_str(parse_url($course['video_url'], PHP_URL_QUERY), $ytParams);
-            $videoId = $ytParams['v'];
+            $videoId = $ytParams['v'] ?? null;
             ?>
-            <iframe width="100%" height="400"
-                src="https://www.youtube-nocookie.com/embed/<?php echo $videoId; ?>?rel=0&modestbranding=1&controls=1&disablekb=1&fs=0"
+            <iframe width="800" height="400"
+                src="https://www.youtube-nocookie.com/embed/<?php echo $videoId; ?>"
                 frameborder="0"
                 allow="autoplay; encrypted-media"
                 allowfullscreen>
@@ -164,7 +164,7 @@ $stmt->close();
 
             <!-- Notepad Feature -->
             <h3>Take Notes</h3>
-            <textarea id="notes" rows="6" cols="50" placeholder="Write your notes here..."></textarea>
+            <textarea id="notes" rows="2" cols="50" placeholder="Write your notes here..."></textarea>
             <br>
             <button class="btn text-light w-10 py-1" onclick="downloadNotes()">Save Notes</button>
         </div>
