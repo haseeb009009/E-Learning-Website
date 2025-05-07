@@ -517,7 +517,7 @@
 
 
     <!-- Banner-2 Start -->
-    <section class="pb-5" style="background: url('img/banner-3.jpg');">
+    <!-- <section class="pb-5" style="background: url('img/banner-3.jpg');">
         <div class="container-xxl mt-5">
             <div class="container">
                 <div class="row g-5 ">
@@ -529,19 +529,19 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-6 p-5 wow fadeInUp" data-wow-delay="0.3s">
+                    <!-- <div class="col-lg-6 p-5 wow fadeInUp" data-wow-delay="0.3s">
 
                         <h1 class="mb-4" style="color: #fb873f;">Become an Instructor</h1>
                         <p class="mb-4 text-white">Instructors from around the world teach millions of learners on Udemy. We provide
                             the tools and skills to teach what you love.</p>
 
                         <a class="btn text-light py-3 mt-2" href="instructor.php">Start Teaching Today</a>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Banner-2 End -->
 
     <!-- FAQ Start  -->

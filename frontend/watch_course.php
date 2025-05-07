@@ -148,19 +148,43 @@ $stmt->close();
             <h1><?php echo $course['title']; ?></h1>
             <p><?php echo $course['description']; ?></p>
 
-            <!-- Embedded YouTube Video -->
+            <!-- Dynamic Video Embedding -->
             <?php
-            // extract video ID from full YouTube URL
-            parse_str(parse_url($course['video_url'], PHP_URL_QUERY), $ytParams);
-            $videoId = $ytParams['v'] ?? null;
-            ?>
-            <iframe width="800" height="400"
-                src="https://www.youtube-nocookie.com/embed/<?php echo $videoId; ?>"
-                frameborder="0"
-                allow="autoplay; encrypted-media"
-                allowfullscreen>
-            </iframe>
+            $video_url = $course['video_url'];
+            $embed_code = '';
 
+            if (strpos($video_url, 'youtube.com/embed') !== false) {
+                // Direct embed URL
+                $embed_code = '<iframe width="800" height="400" src="' . htmlspecialchars($video_url) . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+            } elseif (strpos($video_url, 'youtube.com') !== false || strpos($video_url, 'youtu.be') !== false) {
+                // Convert watch URL to embed
+                parse_str(parse_url($video_url, PHP_URL_QUERY), $ytParams);
+                $videoId = $ytParams['v'] ?? '';
+                if (!$videoId && strpos($video_url, 'youtu.be') !== false) {
+                    $path = parse_url($video_url, PHP_URL_PATH);
+                    $videoId = ltrim($path, '/');
+                }
+                $embed_code = '<iframe width="800" height="400" src="https://www.youtube-nocookie.com/embed/' . $videoId . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+            } elseif (strpos($video_url, 'drive.google.com') !== false) {
+                // Handle Google Drive
+                if (preg_match('/\/d\/(.+?)\//', $video_url, $matches)) {
+                    $fileId = $matches[1];
+                    $embed_code = '<iframe src="https://drive.google.com/file/d/' . $fileId . '/preview" width="800" height="400" allow="autoplay"></iframe>';
+                }
+            } elseif (preg_match('/\.(mp4|webm|ogg)$/i', $video_url)) {
+                // Handle direct video file links
+                $embed_code = '<video width="800" height="400" controls><source src="' . htmlspecialchars($video_url) . '" type="video/mp4">Your browser does not support the video tag.</video>';
+            } elseif (strpos($video_url, 'vimeo.com') !== false) {
+                // Handle Vimeo
+                $vimeoId = (int) substr(parse_url($video_url, PHP_URL_PATH), 1);
+                $embed_code = '<iframe src="https://player.vimeo.com/video/' . $vimeoId . '" width="800" height="400" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+            } else {
+                // Fallback for unknown types: just show the link
+                $embed_code = '<a href="' . htmlspecialchars($video_url) . '" target="_blank">View Video</a>';
+            }
+
+            echo $embed_code;
+            ?>
 
             <!-- Notepad Feature -->
             <h3>Take Notes</h3>
@@ -169,6 +193,7 @@ $stmt->close();
             <button class="btn text-light w-10 py-1" onclick="downloadNotes()">Save Notes</button>
         </div>
     </center>
+
 
     <script>
         function downloadNotes() {
