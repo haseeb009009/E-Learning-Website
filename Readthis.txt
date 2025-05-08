@@ -2,11 +2,11 @@
 
 frontend link
 
-http://localhost/E-Learning-Website/frontend
+http://localhost:8080/E-Learning-Website/frontend
 
 
 myadmin  database link
 
-http://localhost/phpmyadmin/index.php?route=/database/structure&db=lms
+http://localhost:8080/phpmyadmin/index.php?route=/database/structure&db=lms
 
 
