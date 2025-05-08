@@ -97,8 +97,6 @@ if ($result && $result->num_rows > 0) {
                             <a href="about.php" class="dropdown-item">About</a>
                             <a href="team.php" class="dropdown-item">Our Team</a>
                             <a href="contact.php" class="dropdown-item">Contact</a>
-                            <a href="instructor.php" class="dropdown-item">Our instructors</a>
-                            <a href="testimonial.php" class="dropdown-item">Testimonial</a>
                         </div>
                     </div>
                     <a href="contact.php" class="nav-item nav-link"></a>

@@ -6,6 +6,7 @@ $username = "root";
 $password = "";
 
 $conn = new mysqli($host, $username, $password, $dbname);
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     echo "<script>alert('You need to log in first!'); window.location.href='login.html';</script>";
@@ -22,23 +23,35 @@ $course_id = $_GET['course_id'];
 $user_id = $_SESSION['user_id'];
 
 // Fetch course details
-$sql = "SELECT * FROM courses WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $course_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$course_sql = "SELECT * FROM courses WHERE id = ?";
+$course_stmt = $conn->prepare($course_sql);
+$course_stmt->bind_param("i", $course_id);
+$course_stmt->execute();
+$course_result = $course_stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $course = $result->fetch_assoc();
-} else {
+if ($course_result->num_rows === 0) {
     echo "<script>alert('Course not found!'); window.location.href='courses.php';</script>";
     exit;
 }
-$stmt->close();
+$course = $course_result->fetch_assoc();
+$course_stmt->close();
 
+// Fetch user details
+$user_sql = "SELECT username, email FROM users WHERE id = ?";
+$user_stmt = $conn->prepare($user_sql);
+$user_stmt->bind_param("i", $user_id);
+$user_stmt->execute();
+$user_result = $user_stmt->get_result();
 
+if ($user_result->num_rows === 0) {
+    echo "<script>alert('User not found!'); window.location.href='login.html';</script>";
+    exit;
+}
+$user = $user_result->fetch_assoc();
+$user_stmt->close();
+
+// Payment check (if course is paid)
 if ($course['price'] > 0) {
-    // Check if payment is completed for this user and course
     $payment_sql = "SELECT * FROM payments WHERE user_id = ? AND course_id = ? AND payment_status = 'completed'";
     $payment_stmt = $conn->prepare($payment_sql);
     $payment_stmt->bind_param("ii", $user_id, $course_id);
@@ -160,19 +173,13 @@ if ($course['price'] > 0) {
 
     <center>
         <div class="container">
-            <h1><?php echo $course['title']; ?></h1>
-
-
-            <!-- Dynamic Video Embedding -->
+            <h1><?php echo htmlspecialchars($course['title']); ?></h1>
             <?php
             $video_url = $course['video_url'];
             $embed_code = '';
-
             if (strpos($video_url, 'youtube.com/embed') !== false) {
-                // Direct embed URL
                 $embed_code = '<iframe width="800" height="400" src="' . htmlspecialchars($video_url) . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
             } elseif (strpos($video_url, 'youtube.com') !== false || strpos($video_url, 'youtu.be') !== false) {
-                // Convert watch URL to embed
                 parse_str(parse_url($video_url, PHP_URL_QUERY), $ytParams);
                 $videoId = $ytParams['v'] ?? '';
                 if (!$videoId && strpos($video_url, 'youtu.be') !== false) {
@@ -181,49 +188,98 @@ if ($course['price'] > 0) {
                 }
                 $embed_code = '<iframe width="800" height="400" src="https://www.youtube-nocookie.com/embed/' . $videoId . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
             } elseif (strpos($video_url, 'drive.google.com') !== false) {
-                // Handle Google Drive
                 if (preg_match('/\/d\/(.+?)\//', $video_url, $matches)) {
                     $fileId = $matches[1];
                     $embed_code = '<iframe src="https://drive.google.com/file/d/' . $fileId . '/preview" width="800" height="400" allow="autoplay"></iframe>';
                 }
             } elseif (preg_match('/\.(mp4|webm|ogg)$/i', $video_url)) {
-                // Handle direct video file links
                 $embed_code = '<video width="800" height="400" controls><source src="' . htmlspecialchars($video_url) . '" type="video/mp4">Your browser does not support the video tag.</video>';
             } elseif (strpos($video_url, 'vimeo.com') !== false) {
-                // Handle Vimeo
                 $vimeoId = (int) substr(parse_url($video_url, PHP_URL_PATH), 1);
                 $embed_code = '<iframe src="https://player.vimeo.com/video/' . $vimeoId . '" width="800" height="400" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
             } else {
-                // Fallback for unknown types: just show the link
                 $embed_code = '<a href="' . htmlspecialchars($video_url) . '" target="_blank">View Video</a>';
             }
 
             echo $embed_code;
             ?>
-            <!-- Notepad Feature -->
+
             <h3>Take Notes</h3>
-            <textarea id="notes" rows="2" cols="50" placeholder="Write your notes here..."></textarea>
+            <textarea id="notes" rows="3" cols="60" placeholder="Write your notes here..."></textarea>
             <br>
             <button class="btn text-light w-10 py-1" onclick="downloadNotes()">Save Notes</button>
+            <br><br>
+            <button id="certificateBtn" class="btn text-light w-10 py-1" onclick="generateCertificate()" disabled>Download Certificate</button>
+            <script>
+                // Helper to enable certificate button after half video watched
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Try to get the video or iframe
+                    let video = document.querySelector("video");
+                    let iframe = document.querySelector("iframe");
+
+                    if (video) {
+                        // For HTML5 video
+                        video.addEventListener("timeupdate", function () {
+                            if (video.currentTime >= video.duration / 2) {
+                                document.getElementById("certificateBtn").disabled = false;
+                            }
+                        });
+                    } else if (iframe && (iframe.src.includes("youtube") || iframe.src.includes("vimeo"))) {
+                        // For YouTube/Vimeo iframe, use postMessage API
+                        // Only works if embed allows JS API (YouTube)
+                        // For YouTube
+                        if (iframe.src.includes("youtube")) {
+                            // Inject enablejsapi=1 if not present
+                            if (!iframe.src.includes("enablejsapi=1")) {
+                                let src = iframe.src;
+                                src += (src.includes("?") ? "&" : "?") + "enablejsapi=1";
+                                iframe.src = src;
+                            }
+                            window.onYouTubeIframeAPIReady = function () {
+                                let player = new YT.Player(iframe, {
+                                    events: {
+                                        'onStateChange': function (event) {
+                                            if (event.data == YT.PlayerState.PLAYING) {
+                                                let interval = setInterval(function () {
+                                                    player.getDuration && player.getCurrentTime && player.getDuration() > 0 && player.getCurrentTime() >= player.getDuration() / 2 && (document.getElementById("certificateBtn").disabled = false, clearInterval(interval));
+                                                }, 1000);
+                                            }
+                                        }
+                                    }
+                                });
+                            };
+                            // Load YouTube API if not loaded
+                            if (!window.YT) {
+                                let tag = document.createElement('script');
+                                tag.src = "https://www.youtube.com/iframe_api";
+                                document.body.appendChild(tag);
+                            } else if (window.YT && window.YT.Player) {
+                                window.onYouTubeIframeAPIReady();
+                            }
+                        }
+                        // For Vimeo (basic, only works if allowed)
+                        else if (iframe.src.includes("vimeo")) {
+                            let vimeoPlayer = new Vimeo.Player(iframe);
+                            vimeoPlayer.getDuration().then(function(duration) {
+                                vimeoPlayer.on('timeupdate', function(data) {
+                                    if (data.seconds >= duration / 2) {
+                                        document.getElementById("certificateBtn").disabled = false;
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         </div>
     </center>
 
 
-    <script>
-        function downloadNotes() {
-            let notes = document.getElementById("notes").value;
-            let blob = new Blob([notes], {
-                type: "text/plain"
-            });
-            let link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "Course_Notes.txt";
-            link.click();
-        }
-    </script>
 
-<!-- Footer Start -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-4 col-md-6">
@@ -278,6 +334,116 @@ if ($course['price'] > 0) {
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <script>
+    function downloadNotes() {
+        const notes = document.getElementById("notes").value;
+        const blob = new Blob([notes], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "Course_Notes.txt";
+        link.click();
+    }
+
+    function generateCertificate() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+        // Colors and styles
+        const COLORS = {
+            primary: "#fd7e14",
+            secondary: "#f8f9fa",
+            border: "#dee2e6",
+            accent: "#343a40",
+            gold: "#000000",
+        };
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // PHP-injected data
+        const userName = "<?php echo addslashes($user['username']); ?>";
+        const userEmail = "<?php echo addslashes($user['email']); ?>";
+        const courseTitle = "<?php echo addslashes($course['title']); ?>";
+        const currentDate = new Date().toLocaleDateString();
+
+        // Draw common certificate layout
+        function drawCertificateLayout(withLogo = false) {
+            // Borders
+            doc.setLineWidth(6).setDrawColor(COLORS.gold).rect(20, 20, pageWidth - 40, pageHeight - 40, "S");
+            doc.setLineWidth(2).setDrawColor(COLORS.primary).rect(35, 35, pageWidth - 70, pageHeight - 70, "S");
+
+            // Header Bars
+            doc.setFillColor(COLORS.primary).rect(20, 20, pageWidth - 40, 60, "F");
+            doc.setFillColor(COLORS.gold).rect(20, 70, pageWidth - 40, 10, "F");
+
+            // Ribbon
+            doc.setFillColor(COLORS.primary).triangle(pageWidth - 120, 20, pageWidth - 60, 20, pageWidth - 90, 60, "F");
+
+            // Logo or fallback text
+            if (withLogo) {
+                doc.addImage(logo, "PNG", 50, 30, 50, 50);
+                doc.setFont("helvetica", "bold").setFontSize(28).setTextColor(255, 255, 255);
+                doc.text("CourseCraft", 115, 65);
+            } else {
+                doc.setFont("helvetica", "bold").setFontSize(28).setTextColor(255, 255, 255);
+                doc.text("CourseCraft", 50, 65);
+            }
+
+            // Title with shadow
+            doc.setFontSize(40).setTextColor(60, 60, 60);
+            doc.text("Certificate of Completion", pageWidth / 2 + 2, 162, { align: "center" });
+            doc.setTextColor(COLORS.primary);
+            doc.text("Certificate of Completion", pageWidth / 2, 160, { align: "center" });
+
+            // Subtitle
+            doc.setFont("helvetica", "italic").setFontSize(20).setTextColor(COLORS.accent);
+            doc.text("This is to certify that", pageWidth / 2, 210, { align: "center" });
+
+            // User Info
+            doc.setFont("helvetica", "bold").setFontSize(26).setTextColor(COLORS.gold);
+            doc.text(userName, pageWidth / 2, 255, { align: "center" });
+            doc.setFontSize(16).setTextColor(COLORS.accent);
+            doc.text(`(${userEmail})`, pageWidth / 2, 280, { align: "center" });
+
+            // Course info
+            doc.setFont("helvetica", "normal").setFontSize(18).setTextColor(COLORS.accent);
+            doc.text("has successfully completed the course:", pageWidth / 2, 320, { align: "center" });
+
+            doc.setFont("helvetica", "bold").setFontSize(24).setTextColor(COLORS.primary);
+            doc.text(courseTitle, pageWidth / 2, 355, { align: "center" });
+
+            // Divider
+            doc.setDrawColor(COLORS.gold).setLineWidth(2);
+            doc.line(pageWidth / 2 - 120, 370, pageWidth / 2 + 120, 370);
+
+            // Date
+            doc.setFont("helvetica", "normal").setFontSize(16).setTextColor(COLORS.accent);
+            doc.text("Date: " + currentDate, pageWidth - 180, pageHeight - 60);
+
+            // Signature
+            doc.setDrawColor(COLORS.primary).setLineWidth(1);
+            doc.line(pageWidth / 2 - 100, pageHeight - 110, pageWidth / 2 + 100, pageHeight - 110);
+            doc.setFontSize(14).setTextColor(COLORS.accent);
+            doc.text("CourseCraft Team", pageWidth / 2, pageHeight - 95, { align: "center" });
+
+            // Seal
+            doc.setDrawColor(COLORS.gold).setFillColor(COLORS.primary);
+            doc.circle(pageWidth - 120, pageHeight - 120, 35, "FD");
+            doc.setFont("helvetica", "bold").setFontSize(logo?.complete ? 10 : 18).setTextColor(255, 255, 255);
+            doc.text(logo?.complete ? "APPROVED" : "CC", pageWidth - 120, pageHeight - 115, { align: "center" });
+
+            // Save
+            doc.save(`Certificate_${courseTitle.replace(/\s+/g, "_")}.pdf`);
+        }
+
+        // Load logo image
+        const logo = new Image();
+        logo.src = "img/iconn.png";
+
+        logo.onload = () => drawCertificateLayout(true);
+        logo.onerror = () => drawCertificateLayout(false);
+    }
+</script>
 
 
 </body>

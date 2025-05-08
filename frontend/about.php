@@ -1,5 +1,6 @@
 <?php 
 // include 'auth.php';
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -53,8 +54,8 @@
         <a href="index.php" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="img/iconn.png" alt="" height="50px">
             <div class="ms-2">
-            <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
-            <p class="m-0" style="font-size: 12px;">E-learning platform</p>
+                <p class="m-0 fw-bold" style="font-size: 25px;">CourseCraft</p>
+                <p class="m-0" style="font-size: 12px;">E-learning platform</p>
             </div>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -62,7 +63,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
+                <a href="index.php" class="nav-item nav-link ">Home</a>
                 <a href="courses.php" class="nav-item nav-link">Courses</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
@@ -115,7 +116,7 @@
                     <p class="mb-4">
                         At CourseCraft , we believe in accessible, innovative learning experiences that adapt to your
                         schedule and learning style. Join us in embracing the future of education and unlock your
-                        potential with our immersive online courses.
+                        potential with online courses.
                     </p>
                     <p class="mb-4">Welcome to CourseCraft , where learning knows no boundaries. Our mission
                         is to empower individuals worldwide through accessible and innovative education. Here's what
@@ -136,18 +137,6 @@
                     <p class="mb-4">We believe in the transformative power of education. CourseCraft  is
                         designed to empower individuals to pursue their passions, advance their careers, and acquire new
                         skills in a dynamic and supportive environment.</p>
-
-                    <h3 class="mb-4">Innovation in Learning</h3>
-
-                    <p class="mb-4">Embracing technology, we offer innovative learning methods and tools. From
-                        interactive modules to live sessions, we're committed to providing a cutting-edge learning
-                        experience that fosters engagement and knowledge retention.</p>
-
-                    <h3 class="mb-4">Community-Centric Approach</h3>
-
-                    <p class="mb-4"> CourseCraft  is more than just courses; it's a vibrant community. We
-                        encourage collaboration, discussion, and knowledge sharing among learners, fostering an
-                        environment of growth and camaraderie.</p>
 
                     <h3 class="mb-4">Diverse and Inclusive Education</h3>
 
