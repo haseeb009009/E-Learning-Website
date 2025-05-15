@@ -212,66 +212,67 @@ if ($course['price'] > 0) {
             <button id="certificateBtn" class="btn text-light w-10 py-1" onclick="generateCertificate()" disabled>Download Certificate</button>
             <script>
                 // Helper to enable certificate button after half video watched
-                // document.addEventListener("DOMContentLoaded", function () {
-                //     // Try to get the video or iframe
-                //     let video = document.querySelector("video");
-                //     let iframe = document.querySelector("iframe");
-                //     if (video) {
-                //         // For HTML5 video
-                //         video.addEventListener("timeupdate", function () {
-                //             if (video.currentTime >= video.duration / 2) {
-                //                 document.getElementById("certificateBtn").disabled = false;
-                //             }
-                //         });
-                //     } else if (iframe && (iframe.src.includes("youtube") || iframe.src.includes("vimeo"))) {
-                //         if (iframe.src.includes("youtube")) {
-                //             // Inject enablejsapi=1 if not present
-                //             if (!iframe.src.includes("enablejsapi=1")) {
-                //                 let src = iframe.src;
-                //                 src += (src.includes("?") ? "&" : "?") + "enablejsapi=1";
-                //                 iframe.src = src;
-                //             }
-                //             window.onYouTubeIframeAPIReady = function () {
-                //                 let player = new YT.Player(iframe, {
-                //                     events: {
-                //                         'onStateChange': function (event) {
-                //                             if (event.data == YT.PlayerState.PLAYING) {
-                //                                 let interval = setInterval(function () {
-                //                                     player.getDuration && player.getCurrentTime && player.getDuration() > 0 && player.getCurrentTime() >= player.getDuration() / 2 && (document.getElementById("certificateBtn").disabled = false, clearInterval(interval));
-                //                                 }, 1000);
-                //                             }
-                //                         }
-                //                     }
-                //                 });
-                //             };
-                //             // Load YouTube API if not loaded
-                //             if (!window.YT) {
-                //                 let tag = document.createElement('script');
-                //                 tag.src = "https://www.youtube.com/iframe_api";
-                //                 document.body.appendChild(tag);
-                //             } else if (window.YT && window.YT.Player) {
-                //                 window.onYouTubeIframeAPIReady();
-                //             }
-                //         }
-                //         // For Vimeo (basic, only works if allowed)
-                //         else if (iframe.src.includes("vimeo")) {
-                //             let vimeoPlayer = new Vimeo.Player(iframe);
-                //             vimeoPlayer.getDuration().then(function(duration) {
-                //                 vimeoPlayer.on('timeupdate', function(data) {
-                //                     if (data.seconds >= duration / 2) {
-                //                         document.getElementById("certificateBtn").disabled = false;
-                //                     }
-                //                 });
-                //             });
-                //         }
-                //     }
-                // });
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Try to get the video or iframe
+                    let video = document.querySelector("video");
+                    let iframe = document.querySelector("iframe");
+                    if (video) {
+                        // For HTML5 video
+                        video.addEventListener("timeupdate", function () {
+                            if (video.currentTime >= video.duration / 2) {
+                                document.getElementById("certificateBtn").disabled = false;
+                            }
+                        });
+                    } else if (iframe && (iframe.src.includes("youtube") || iframe.src.includes("vimeo"))) {
+                        if (iframe.src.includes("youtube")) {
+                            // Inject enablejsapi=1 if not present
+                            if (!iframe.src.includes("enablejsapi=1")) {
+                                let src = iframe.src;
+                                src += (src.includes("?") ? "&" : "?") + "enablejsapi=1";
+                                iframe.src = src;
+                            }
+                            window.onYouTubeIframeAPIReady = function () {
+                                let player = new YT.Player(iframe, {
+                                    events: {
+                                        'onStateChange': function (event) {
+                                            if (event.data == YT.PlayerState.PLAYING) {
+                                                let interval = setInterval(function () {
+                                                    player.getDuration && player.getCurrentTime && player.getDuration() > 0 && player.getCurrentTime() >= player.getDuration() / 2 && (document.getElementById("certificateBtn").disabled = false, clearInterval(interval));
+                                                }, 1000);
+                                            }
+                                        }
+                                    }
+                                });
+                            };
+                            // Load YouTube API if not loaded
+                            if (!window.YT) {
+                                let tag = document.createElement('script');
+                                tag.src = "https://www.youtube.com/iframe_api";
+                                document.body.appendChild(tag);
+                            } else if (window.YT && window.YT.Player) {
+                                window.onYouTubeIframeAPIReady();
+                            }
+                        }
+                        // For Vimeo (basic, only works if allowed)
+                        else if (iframe.src.includes("vimeo")) {
+                            let vimeoPlayer = new Vimeo.Player(iframe);
+                            vimeoPlayer.getDuration().then(function(duration) {
+                                vimeoPlayer.on('timeupdate', function(data) {
+                                    if (data.seconds >= duration / 2) {
+                                        document.getElementById("certificateBtn").disabled = false;
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
                 
                 // Directly enable the certificate button (bypass video checks)
                 
-                document.addEventListener("DOMContentLoaded", function () {
-                    document.getElementById("certificateBtn").disabled = false;
-                });
+                // document.addEventListener("DOMContentLoaded", function () {
+                //     document.getElementById("certificateBtn").disabled = false;
+                // });
             </script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         </div>
